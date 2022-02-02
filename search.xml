@@ -1,40 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/2022/01/30/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+    <title>SpringBoot学习（一）</title>
+    <url>/2022/02/02/SpringBoot%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89/</url>
+    <content><![CDATA[<blockquote>
+<h3 id="SpringBoot学习路线"><a href="#SpringBoot学习路线" class="headerlink" title="SpringBoot学习路线"></a>SpringBoot学习路线</h3></blockquote>
+<img src="C:\Users\a\AppData\Roaming\Typora\typora-user-images\image-20220202101942995.png" alt="image-20220202101942995" style="zoom:80%;" />
 
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<h3 id="什么是Spring"><a href="#什么是Spring" class="headerlink" title="什么是Spring"></a>什么是Spring</h3><p>Spring Boot基于Spring 开发，Spirng Boot本身并不提供Spring框架的核心特性以及扩展功能，只是用于快速、敏捷地开发新一代基于Spring 框架的应用程序。也就是说，它并不是用来替代Spring 的解决方案，而是和Spring 框架紧密结合用于提升Spring 开发者体验的工具。SpringBoot以<strong>约定大于配置</strong>的核心思想，默认帮我们进行了很多设置，多数Spring Boot应用只需要很少的Spring 配置。同时它集成了大量常用的第三方库配置（例如Redis、MongoDB、Jpa、RabbitMQ、Quartz 等等)，Spring Boot应用中这些第三方库几乎可以零配置的开箱即用</p>
+<h3 id="SpringBooo的主要优点"><a href="#SpringBooo的主要优点" class="headerlink" title="SpringBooo的主要优点"></a>SpringBooo的主要优点</h3><ul>
+<li>为所有Spring开发者更快的入门</li>
+<li><strong>开箱即用</strong>，提供各种默认配置来简化项目配置·内嵌式容器简化Web项目</li>
+<li>没有冗余代码生成和XML配置的要求</li>
+</ul>
 ]]></content>
+      <categories>
+        <category>后端</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
+        <tag>Java</tag>
+      </tags>
   </entry>
   <entry>
     <title>数据结构（一）</title>
     <url>/2022/01/31/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%88%E4%B8%80%EF%BC%89/</url>
-    <content><![CDATA[<h3 id="学习"><a href="#学习" class="headerlink" title="学习"></a>学习</h3><p>考试沙井街道哈数据库的白沙路口的婚纱大手大脚你不看</p>
+    <content><![CDATA[<h2 id="第一章-绪论"><a href="#第一章-绪论" class="headerlink" title="第一章 绪论"></a>第一章 绪论</h2><blockquote>
+<p>数据对象三要素</p>
+</blockquote>
 ]]></content>
+      <categories>
+        <category>考研</category>
+      </categories>
       <tags>
         <tag>考研</tag>
+        <tag>数据结构</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>分类</title>
-    <url>/categories/index.html</url>
-    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>标签</title>
     <url>/tags/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>分类</title>
+    <url>/categories/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
