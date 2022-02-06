@@ -1,66 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>SpringBoot学习(二)</title>
-    <url>/2022/02/05/SpringBoot%E5%AD%A6%E4%B9%A0-%E4%BA%8C/</url>
-    <content><![CDATA[<h3 id="自动装配原理"><a href="#自动装配原理" class="headerlink" title="自动装配原理"></a>自动装配原理</h3><blockquote>
-<p>pom.xml</p>
-</blockquote>
-<ul>
-<li>spring-boot-dependencies：核心依赖在父工程中；</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-dependencies<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>我们在写或者引入一些springboot依赖时，不需要指定版本，就是因为有这些版本仓库</li>
-</ul>
-<blockquote>
-<p>启动器</p>
-</blockquote>
-<ul>
-<li><p>```xml</p>
-  <!--启动器-->
-<pre><code>  &lt;dependency&gt;
-      &lt;!--默认启动器--&gt;
-      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;   
-      &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;
-  &lt;/dependency&gt;
-  &lt;dependency&gt;
-      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;   
-      &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
-  &lt;/dependency&gt;
-  &lt;dependency&gt;
-      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-      &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
-      &lt;scope&gt;test&lt;/scope&gt;
-  &lt;/dependency&gt;
-</code></pre>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    </span><br><span class="line">* 启动器：其实就是SpringBoot的启动场景；</span><br><span class="line"></span><br><span class="line">* 比如spring-boot-starter-web 会自动导入web环境所以的依赖；</span><br><span class="line"></span><br><span class="line">* springboot会将所有的功能场景，变成一个个启动器</span><br><span class="line"></span><br><span class="line">* 我们要使用什么功能，就只需要找到对应的启动器就可以 `启动器`</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&gt; 主程序</span><br><span class="line"></span><br><span class="line">**@SpringBootApplication :标注这个类是一个spingboot的应用**</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">@SpringBootApplication</span><br><span class="line">public class Springboot01HelloworldApplication &#123;</span><br><span class="line"></span><br><span class="line">   public static void main(String[] args) &#123;</span><br><span class="line">   	  //将springboot应用启动</span><br><span class="line">      SpringApplication.run(Springboot01HelloworldApplication.class, args);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>注解</p>
-<ul>
-<li>```java@SpringBootConfiguration :springboot的配置<pre><code>@Configuration：spring配置类
-@Component： 说明这也是一个spring的组件
-</code></pre>
-@EnableAutoConfiguration ：自动配置<pre><code>@AutoConfigurationPackage ：自动配置包
-    @Import(&#123;Registrar.class&#125;)：自动配置 `包注册`
-@Import(&#123;AutoConfigurationImportSelector.class&#125;) ：自动配置导入选择
-</code></pre>
-// 获取所有的配置<br>List<String> configurations = this.getCandidateConfigurations(annotationMetadata, attributes);<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">获取候选的配置(getCandidateConfigurations)</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">protected List&lt;String&gt; getCandidateConfigurations(AnnotationMetadata metadata, AnnotationAttributes attributes) &#123;</span><br><span class="line">    List&lt;String&gt; configurations = SpringFactoriesLoader.loadFactoryNames(this.getSpringFactoriesLoaderFactoryClass(), this.getBeanClassLoader());</span><br><span class="line">    Assert.notEmpty(configurations, &quot;No auto configuration classes found in META-INF/spring.factories. If you are using a custom packaging, make sure that file is correct.&quot;);</span><br><span class="line">    return configurations;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-</ul>
-<p>META-INF/spring.factories:自动配置的核心文件</p>
-<p><img src="https://s4.ax1x.com/2022/02/05/HnekrQ.png"></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Properties properties = PropertiesLoaderUtils.loadProperties(resource);</span><br><span class="line">所有资源加载到配置类中</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>后端</category>
-      </categories>
-      <tags>
-        <tag>Spring</tag>
-        <tag>Java</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SpringBoot学习（一）</title>
     <url>/2022/02/02/SpringBoot%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89/</url>
     <content><![CDATA[<blockquote>
@@ -113,6 +53,62 @@
       </tags>
   </entry>
   <entry>
+    <title>SpringBoot学习(二)</title>
+    <url>/2022/02/05/SpringBoot%E5%AD%A6%E4%B9%A0-%E4%BA%8C/</url>
+    <content><![CDATA[<h3 id="自动装配原理"><a href="#自动装配原理" class="headerlink" title="自动装配原理"></a>自动装配原理</h3><blockquote>
+<p>pom.xml</p>
+</blockquote>
+<ul>
+<li>spring-boot-dependencies：核心依赖在父工程中；</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-dependencies<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>我们在写或者引入一些springboot依赖时，不需要指定版本，就是因为有这些版本仓库</li>
+</ul>
+<blockquote>
+<p>启动器</p>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--启动器--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--默认启动器--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>   </span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>   </span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>启动器：其实就是SpringBoot的启动场景；</p>
+</li>
+<li><p>比如spring-boot-starter-web 会自动导入web环境所以的依赖；</p>
+</li>
+<li><p>springboot会将所有的功能场景，变成一个个启动器</p>
+</li>
+<li><p>我们要使用什么功能，就只需要找到对应的启动器就可以 <code>启动器</code></p>
+</li>
+</ul>
+<blockquote>
+<p>主程序</p>
+</blockquote>
+<p><strong>@SpringBootApplication :标注这个类是一个spingboot的应用</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Springboot01HelloworldApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">   	  <span class="comment">//将springboot应用启动</span></span><br><span class="line">      SpringApplication.run(Springboot01HelloworldApplication.class, args);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>注解</li>
+</ul>
+ <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootConfiguration</span> :springboot的配置</span><br><span class="line">	<span class="meta">@Configuration</span>：spring配置类</span><br><span class="line">	<span class="meta">@Component</span>： 说明这也是一个spring的组件</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@EnableAutoConfiguration</span> ：自动配置</span><br><span class="line">	<span class="meta">@AutoConfigurationPackage</span> ：自动配置包</span><br><span class="line">		<span class="meta">@Import(&#123;Registrar.class&#125;)</span>：自动配置 `包注册`</span><br><span class="line">	<span class="meta">@Import(&#123;AutoConfigurationImportSelector.class&#125;)</span> ：自动配置导入选择</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取所有的配置</span></span><br><span class="line">List&lt;String&gt; configurations = <span class="keyword">this</span>.getCandidateConfigurations(annotationMetadata, attributes);</span><br></pre></td></tr></table></figure>
+
+<p>获取候选的配置(getCandidateConfigurations)</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> List&lt;String&gt; <span class="title">getCandidateConfigurations</span><span class="params">(AnnotationMetadata metadata, AnnotationAttributes attributes)</span> </span>&#123;</span><br><span class="line">    List&lt;String&gt; configurations = SpringFactoriesLoader.loadFactoryNames(<span class="keyword">this</span>.getSpringFactoriesLoaderFactoryClass(), <span class="keyword">this</span>.getBeanClassLoader());</span><br><span class="line">    Assert.notEmpty(configurations, <span class="string">&quot;No auto configuration classes found in META-INF/spring.factories. If you are using a custom packaging, make sure that file is correct.&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> configurations;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>META-INF/spring.factories:自动配置的核心文件</p>
+<p><img src="https://s4.ax1x.com/2022/02/05/HnekrQ.png"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Properties properties = PropertiesLoaderUtils.loadProperties(resource);</span><br><span class="line">所有资源加载到配置类中</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>后端</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
+        <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>数据结构（一）</title>
     <url>/2022/01/31/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%88%E4%B8%80%EF%BC%89/</url>
     <content><![CDATA[<h2 id="第一章-绪论"><a href="#第一章-绪论" class="headerlink" title="第一章 绪论"></a>第一章 绪论</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><ul>
@@ -134,13 +130,13 @@
       </tags>
   </entry>
   <entry>
-    <title>分类</title>
-    <url>/categories/index.html</url>
+    <title>标签</title>
+    <url>/tags/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>标签</title>
-    <url>/tags/index.html</url>
+    <title>分类</title>
+    <url>/categories/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
