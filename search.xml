@@ -53,8 +53,54 @@
       </tags>
   </entry>
   <entry>
-    <title>SpringBoot学习(二)</title>
-    <url>/2022/02/05/SpringBoot%E5%AD%A6%E4%B9%A0-%E4%BA%8C/</url>
+    <title>数据结构（一）</title>
+    <url>/2022/01/31/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%88%E4%B8%80%EF%BC%89/</url>
+    <content><![CDATA[<h2 id="第1章-绪论"><a href="#第1章-绪论" class="headerlink" title="第1章 绪论"></a>第1章 绪论</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><ul>
+<li>数据元素</li>
+</ul>
+<p>数据元素是数据的<strong>基本</strong>单位。一个数据元素可由若干<code>数据项</code>组成；</p>
+<p><strong>数据项</strong>（还可以是组合项）是构成数据元素的不可分割的<strong>最小单位</strong>；</p>
+<ul>
+<li>数据对象</li>
+</ul>
+<p>数据对象是具有<strong>相同性质</strong>的数据元素的<strong>集合</strong>，是数据的一个子集</p>
+<ul>
+<li>数据结构</li>
+</ul>
+<p>数据结构是相互直接存在一种或多种特定<strong>关系</strong>的数据元素的<strong>集合</strong></p>
+<blockquote>
+<h3 id="数据结构三要素"><a href="#数据结构三要素" class="headerlink" title="数据结构三要素"></a>数据结构三要素</h3></blockquote>
+<img src="https://s4.ax1x.com/2022/02/26/bVu5ut.png" style="zoom: 67%;" />
+
+<h4 id="逻辑结构"><a href="#逻辑结构" class="headerlink" title="逻辑结构"></a>逻辑结构</h4><ul>
+<li>集合：各种元素同属一个集合，无其他关系</li>
+<li>线性：一对一的关系；除了第一个元素都有唯一前驱；除了最后一个元素都有唯一后继</li>
+<li>树形：一对多的关系</li>
+<li>图状：多对多的关系</li>
+</ul>
+<h4 id="数据运算"><a href="#数据运算" class="headerlink" title="数据运算"></a>数据运算</h4><p>结合逻辑结构、实际需求来定义基本运算</p>
+<h4 id="物理结构（存储结构）"><a href="#物理结构（存储结构）" class="headerlink" title="物理结构（存储结构）"></a>物理结构（存储结构）</h4><ul>
+<li><p>顺序存储：逻辑上相邻的数据元素在物理位置上也相邻（线性表）</p>
+</li>
+<li><p>链式存储：逻辑上可以不相邻，借助指示元素存储地址的<strong>指针</strong>来表示元素之间的逻辑关系。</p>
+</li>
+<li><p>索引存储：建立<strong>索引表</strong>，每一个索引项存储元素信息（关键字，地址）</p>
+</li>
+<li><p>散列存储：或<strong>哈希（Hash）</strong>存储，通过关键字计算出元素的存储地址</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>考研</category>
+      </categories>
+      <tags>
+        <tag>考研</tag>
+        <tag>数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringBoot学习（二）</title>
+    <url>/2022/02/05/SpringBoot%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/</url>
     <content><![CDATA[<h3 id="自动装配原理"><a href="#自动装配原理" class="headerlink" title="自动装配原理"></a>自动装配原理</h3><blockquote>
 <p>pom.xml</p>
 </blockquote>
@@ -88,18 +134,34 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Springboot01HelloworldApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">   	  <span class="comment">//将springboot应用启动</span></span><br><span class="line">      SpringApplication.run(Springboot01HelloworldApplication.class, args);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>注解</li>
+<li><strong>注解</strong></li>
 </ul>
  <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootConfiguration</span> :springboot的配置</span><br><span class="line">	<span class="meta">@Configuration</span>：spring配置类</span><br><span class="line">	<span class="meta">@Component</span>： 说明这也是一个spring的组件</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@EnableAutoConfiguration</span> ：自动配置</span><br><span class="line">	<span class="meta">@AutoConfigurationPackage</span> ：自动配置包</span><br><span class="line">		<span class="meta">@Import(&#123;Registrar.class&#125;)</span>：自动配置 `包注册`</span><br><span class="line">	<span class="meta">@Import(&#123;AutoConfigurationImportSelector.class&#125;)</span> ：自动配置导入选择</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取所有的配置</span></span><br><span class="line">List&lt;String&gt; configurations = <span class="keyword">this</span>.getCandidateConfigurations(annotationMetadata, attributes);</span><br></pre></td></tr></table></figure>
 
 <p>获取候选的配置(getCandidateConfigurations)</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> List&lt;String&gt; <span class="title">getCandidateConfigurations</span><span class="params">(AnnotationMetadata metadata, AnnotationAttributes attributes)</span> </span>&#123;</span><br><span class="line">    List&lt;String&gt; configurations = SpringFactoriesLoader.loadFactoryNames(<span class="keyword">this</span>.getSpringFactoriesLoaderFactoryClass(), <span class="keyword">this</span>.getBeanClassLoader());</span><br><span class="line">    Assert.notEmpty(configurations, <span class="string">&quot;No auto configuration classes found in META-INF/spring.factories. If you are using a custom packaging, make sure that file is correct.&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> configurations;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-
-
 <p>META-INF/spring.factories:自动配置的核心文件</p>
 <p><img src="https://s4.ax1x.com/2022/02/05/HnekrQ.png"></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Properties properties = PropertiesLoaderUtils.loadProperties(resource);</span><br><span class="line">所有资源加载到配置类中</span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Properties properties = PropertiesLoaderUtils.loadProperties(resource);</span><br><span class="line">所有资源加载到配置类中</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>流程图</li>
+</ul>
+<img src="https://s4.ax1x.com/2022/02/07/HMKhzn.png" style="zoom: 80%;" />
+
+<p><strong>结论：</strong>springboot所有的自动配置都是在启动的时候送奥妙并加载：<code>spring.factories</code>所有的自动配置类都在里面，但不一定生效，</p>
+<p>要判断条件是否成立，只要导入对应的start，就有了对应的启动器。有了启动器，我们自动装配就会生效，然后就能配置成功。</p>
+<ol>
+<li>springboot在启动的时候，从类路径下/META-INF/<code>spring.factories</code>获取指定的值；</li>
+<li>将这些自动配置的类导入容器，自动配置就会生效，帮我们进行自动配置</li>
+<li>以前我们需要自己配置的东西，自动配置类都帮我们解决了</li>
+<li>整个J2EE的整体解决方案和自动配置都在springboot-autoconfigure的jar包中;</li>
+<li><strong>它将所有需要导入的组件以全类名的方式返回，这些组件就会被添加到容器中﹔</strong></li>
+<li>它会给容器中导入非常多的自动配置类(xxxAutoConfiguration)，就是给容器中导入这个场景需要的所有组件，并配置好这些组件;</li>
+<li><strong>有了自动配置类，免去了我们手动编写配置注入功能组件等的工作;</strong></li>
+</ol>
+]]></content>
       <categories>
         <category>后端</category>
       </categories>
@@ -109,18 +171,9 @@
       </tags>
   </entry>
   <entry>
-    <title>数据结构（一）</title>
-    <url>/2022/01/31/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%88%E4%B8%80%EF%BC%89/</url>
-    <content><![CDATA[<h2 id="第一章-绪论"><a href="#第一章-绪论" class="headerlink" title="第一章 绪论"></a>第一章 绪论</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><ul>
-<li>数据元素</li>
-</ul>
-<p>数据元素是数据的<strong>基本</strong>单位。一个数据元素可由若干<code>数据项</code>组成；</p>
-<p><strong>数据项</strong>（还可以是组合项）是构成数据元素的不可分割的<strong>最小单位</strong>；</p>
-<ul>
-<li>数据对象</li>
-</ul>
-<p>数据对象是具有<strong>相同性质</strong>的数据元素的<strong>集合</strong></p>
-]]></content>
+    <title>数据结构（二）</title>
+    <url>/2022/02/06/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%88%E4%BA%8C%EF%BC%89/</url>
+    <content><![CDATA[<h2 id="第2章-线性表"><a href="#第2章-线性表" class="headerlink" title="第2章 线性表"></a>第2章 线性表</h2>]]></content>
       <categories>
         <category>考研</category>
       </categories>
@@ -128,6 +181,11 @@
         <tag>考研</tag>
         <tag>数据结构</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>软件工程导论（一）</title>
+    <url>/2022/04/14/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%E5%AF%BC%E8%AE%BA%EF%BC%88%E4%B8%80%EF%BC%89/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>标签</title>
