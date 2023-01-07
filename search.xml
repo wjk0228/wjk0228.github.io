@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title></title>
+    <title>Node学习笔记（一）</title>
     <url>/2023/01/07/Node2020%E7%AC%94%E8%AE%B0%EF%BC%881%EF%BC%89/</url>
     <content><![CDATA[<h1 id="Node学习笔记（一）"><a href="#Node学习笔记（一）" class="headerlink" title="Node学习笔记（一）"></a>Node学习笔记（一）</h1><h3 id="1-Node的简介"><a href="#1-Node的简介" class="headerlink" title="1.Node的简介"></a>1.Node的简介</h3><p>Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境，nodejs允许javascript代码运行在服务端</p>
 <ul>
@@ -74,11 +74,18 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var fs = require(&quot;fs&quot;);</span><br><span class="line">var zlib = require(&#x27;zlib&#x27;);</span><br><span class="line"></span><br><span class="line">// 解压 input.txt.gz 文件为 input.txt</span><br><span class="line">fs.createReadStream(&#x27;input.txt.gz&#x27;)</span><br><span class="line">  .pipe(zlib.createGunzip())</span><br><span class="line">  .pipe(fs.createWriteStream(&#x27;input.txt&#x27;));</span><br><span class="line">  </span><br><span class="line">console.log(&quot;文件解压完成。&quot;);</span><br></pre></td></tr></table></figure>
 <p>代码执行结果如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ node decompress.js </span><br><span class="line">文件解压完成。</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Nodejs</category>
+      </categories>
+      <tags>
+        <tag>Node</tag>
+        <tag>前端</tag>
+      </tags>
   </entry>
   <entry>
-    <title></title>
+    <title>Node学习笔记（二）</title>
     <url>/2023/01/07/Node2020%E7%AC%94%E8%AE%B0%EF%BC%882%EF%BC%89/</url>
-    <content><![CDATA[<h1 id="Node学习笔记（二）"><a href="#Node学习笔记（二）" class="headerlink" title="Node学习笔记（二）"></a>Node学习笔记（二）</h1><h2 id="Node事件循环"><a href="#Node事件循环" class="headerlink" title="Node事件循环"></a>Node事件循环</h2><p>Node.js 是单进程单线程应用程序，但是因为<br>V8引擎提供的异步执行回调接口，通过这些接口可以处理大量的并发，所以性能非常高。</p>
+    <content><![CDATA[<h2 id=""><a href="#" class="headerlink" title=""></a></h2><h1 id="Node学习笔记（二）"><a href="#Node学习笔记（二）" class="headerlink" title="Node学习笔记（二）"></a>Node学习笔记（二）</h1><h2 id="Node事件循环"><a href="#Node事件循环" class="headerlink" title="Node事件循环"></a>Node事件循环</h2><p>Node.js 是单进程单线程应用程序，但是因为<br>V8引擎提供的异步执行回调接口，通过这些接口可以处理大量的并发，所以性能非常高。</p>
 <p>Node.js 几乎每一个 API 都是支持回调函数的。</p>
 <p>Node.js 基本上所有的事件机制都是用设计模式中观察者模式实现。</p>
 <p>Node.js 单线程类似进入一个while(true)的事件循环，直到没有事件观察者退出，每个异步事件都生成一个事件观察者，如果有事件发生就调用该回调函数.</p>
@@ -93,9 +100,16 @@
 <h5 id="实例-1"><a href="#实例-1" class="headerlink" title="实例"></a>实例</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 引入 events 模块</span><br><span class="line">var events = require(&#x27;events&#x27;);</span><br><span class="line">// 创建 eventEmitter 对象</span><br><span class="line">var eventEmitter = new events.EventEmitter();</span><br><span class="line"> </span><br><span class="line">// 创建事件处理程序</span><br><span class="line">var connectHandler = function connected() &#123;</span><br><span class="line">   console.log(&#x27;连接成功。&#x27;);</span><br><span class="line">  </span><br><span class="line">   // 触发 data_received 事件 </span><br><span class="line">   eventEmitter.emit(&#x27;data_received&#x27;);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">// 绑定 connection 事件处理程序</span><br><span class="line">eventEmitter.on(&#x27;connection&#x27;, connectHandler);</span><br><span class="line"> </span><br><span class="line">// 使用匿名函数绑定 data_received 事件</span><br><span class="line">eventEmitter.on(&#x27;data_received&#x27;, function()&#123;</span><br><span class="line">   console.log(&#x27;数据接收成功。&#x27;);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">// 触发 connection 事件 </span><br><span class="line">eventEmitter.emit(&#x27;connection&#x27;);</span><br><span class="line"> </span><br><span class="line">console.log(&quot;程序执行完毕。&quot;);</span><br></pre></td></tr></table></figure>
 <p>接下来让我们执行以上代码：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ node main.js</span><br><span class="line">连接成功。</span><br><span class="line">数据接收成功。</span><br><span class="line">程序执行完毕。</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Nodejs</category>
+      </categories>
+      <tags>
+        <tag>Node</tag>
+        <tag>前端</tag>
+      </tags>
   </entry>
   <entry>
-    <title></title>
+    <title>Node学习笔记（三）</title>
     <url>/2023/01/07/Node2020%E7%AC%94%E8%AE%B0%EF%BC%883%EF%BC%89/</url>
     <content><![CDATA[<h1 id="Node学习笔记（三）"><a href="#Node学习笔记（三）" class="headerlink" title="Node学习笔记（三）"></a>Node学习笔记（三）</h1><h2 id="path模块"><a href="#path模块" class="headerlink" title="path模块"></a>path模块</h2><ul>
 <li>path.resolve([…paths])把一个路径或路径片段得多序列解析为一个绝对路径<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">path.resolve(&#x27;foo&#x27;,&#x27;/baz&#x27;,&#x27;bar&#x27;);</span><br><span class="line">//C:\baz\bar</span><br></pre></td></tr></table></figure></li>
@@ -104,11 +118,18 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let path = require(&#x27;path&#x27;)</span><br><span class="line"></span><br><span class="line">//获取当前执行文件的目录</span><br><span class="line">console.log(__dirname)</span><br><span class="line"></span><br><span class="line">//获取当前的执行文件</span><br><span class="line">console.log(__filename)</span><br><span class="line"></span><br><span class="line">console.log(path.extname(__filename))</span><br><span class="line">//解析路径，可以将路径信息直接解析出来,解析出根路径，目录，扩展名，文件名称，文件名，扩展名</span><br><span class="line">console.log(path.parse(__filename))</span><br></pre></td></tr></table></figure>
 <h3 id="os模块"><a href="#os模块" class="headerlink" title="os模块"></a>os模块</h3><p>· os.totalmem() 获取内存大小</p>
 ]]></content>
+      <categories>
+        <category>Nodejs</category>
+      </categories>
+      <tags>
+        <tag>Node</tag>
+        <tag>前端</tag>
+      </tags>
   </entry>
   <entry>
-    <title></title>
+    <title>Node学习笔记（四）</title>
     <url>/2023/01/07/Node2020%E7%AC%94%E8%AE%B0%EF%BC%884%EF%BC%89/</url>
-    <content><![CDATA[<h1 id="Node学习笔记（四）"><a href="#Node学习笔记（四）" class="headerlink" title="Node学习笔记（四）"></a>Node学习笔记（四）</h1><h2 id="url模块"><a href="#url模块" class="headerlink" title="url模块"></a>url模块</h2><h3 id="1-url-parse"><a href="#1-url-parse" class="headerlink" title="1.url.parse()"></a>1.url.parse()</h3><p>url.parse() 方法可以解析一个url地址，通过传入第二个参数（true）把包含有查询字符串的query转换成对象</p>
+    <content><![CDATA[<h2 id=""><a href="#" class="headerlink" title=""></a></h2><h1 id="Node学习笔记（四）"><a href="#Node学习笔记（四）" class="headerlink" title="Node学习笔记（四）"></a>Node学习笔记（四）</h1><h2 id="url模块"><a href="#url模块" class="headerlink" title="url模块"></a>url模块</h2><h3 id="1-url-parse"><a href="#1-url-parse" class="headerlink" title="1.url.parse()"></a>1.url.parse()</h3><p>url.parse() 方法可以解析一个url地址，通过传入第二个参数（true）把包含有查询字符串的query转换成对象</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let url=require(&#x27;url&#x27;);</span><br><span class="line">let obj=url.parse(&#x27;http://www.baidu.com?name=cc&amp;age=24&#x27;)</span><br></pre></td></tr></table></figure>
 <h3 id="2-url-resolve"><a href="#2-url-resolve" class="headerlink" title="2.url.resolve()"></a>2.url.resolve()</h3><p>url.resolve()方法解析相对于基URL的目标URL。第一个参数：基URL，第二个参数：目标URL  (合成)</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let url=require(&#x27;url&#x27;);</span><br><span class="line">let obj=url.resolve(&#x27;http://www.baidu.com/home&#x27;,&#x27;/about&#x27;)</span><br></pre></td></tr></table></figure>
@@ -118,66 +139,13 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var cheerio = require(&#x27;cheerio&#x27;),</span><br><span class="line">    $ = cheerio.load(&#x27;&lt;h2 class = &quot;title&quot;&gt;Hello world&lt;/h2&gt;&#x27;);</span><br><span class="line"></span><br><span class="line">$(&#x27;h2.title&#x27;).text(&#x27;Hello there!&#x27;);</span><br><span class="line">$(&#x27;h2&#x27;).addClass(&#x27;welcome&#x27;);</span><br><span class="line"></span><br><span class="line">$.html();</span><br><span class="line">//=&gt; &lt;h2 class = &quot;title welcome&quot;&gt;Hello there!&lt;/h2&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h4 id="实例-爬取表情包"><a href="#实例-爬取表情包" class="headerlink" title="实例 -爬取表情包"></a>实例 -爬取表情包</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">const cheerio = require(&quot;cheerio&quot;);</span><br><span class="line">const axios = require(&#x27;axios&#x27;)</span><br><span class="line">const fs = require(&#x27;fs&#x27;)</span><br><span class="line">const url = require(&#x27;url&#x27;)</span><br><span class="line">const path = require(&#x27;path&#x27;)</span><br><span class="line">//获取HTML文档的内容，内容的获取跟jquery一样</span><br><span class="line"></span><br><span class="line">let httpUrl = &quot;https://www.doutula.com/article/list/?page=1&quot;</span><br><span class="line">//等待函数</span><br><span class="line">async function wait(milliseconds)&#123;</span><br><span class="line">    return new Promise(function(resolve,reject)&#123;</span><br><span class="line">        setTimeout(function()&#123;</span><br><span class="line">            resolve()</span><br><span class="line">        &#125;,milliseconds)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//获取页面总数</span><br><span class="line">async function getNum()&#123;</span><br><span class="line">    res = await axios.get(httpUrl)</span><br><span class="line">    let $ = cheerio.load(res.data)</span><br><span class="line">    let btnLength = $(&#x27;.pagination li&#x27;).length;</span><br><span class="line">    let allNum = $(&#x27;.pagination li&#x27;).eq(btnLength-2).find(&#x27;a&#x27;).text()</span><br><span class="line">    //console.log(allNum)</span><br><span class="line">    return allNum</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">async function spider()&#123;</span><br><span class="line">    //获取所有的页面总数</span><br><span class="line">    let allPageNum = await getNum()</span><br><span class="line">    for(let i=1;i&lt;=allPageNum;i++)&#123;</span><br><span class="line">        await wait(2000)</span><br><span class="line">        getListPage(i)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">async function getListPage(pageNum)&#123;</span><br><span class="line">    let httpUrl = &quot;https://www.doutula.com/article/list/?page=&quot;+pageNum;</span><br><span class="line">    let res = await axios.get(httpUrl)</span><br><span class="line">    //console.log(res.data)</span><br><span class="line">    //cheerio解析html文档</span><br><span class="line">    let $ = cheerio.load(res.data)</span><br><span class="line">    //获取当前页面的所有的表情页面的链接</span><br><span class="line">    $(&#x27;#home .col-sm-9&gt;a&#x27;).each(async (i,element)=&gt;&#123;</span><br><span class="line">       let  pageUrl = $(element).attr(&#x27;href&#x27;);</span><br><span class="line">       let title = $(element).find(&#x27;.random_title&#x27;).text()</span><br><span class="line">       let reg = /(.*?)\d/igs;</span><br><span class="line">       title = reg.exec(title)[1];</span><br><span class="line">       fs.mkdir(&#x27;./img/&#x27;+title,function(err)&#123;</span><br><span class="line">            if(err)&#123;</span><br><span class="line">                //console.log(err)</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                console.log(&quot;成功创建目录：&quot;+&#x27;./img/&#x27;+title)</span><br><span class="line">            &#125;</span><br><span class="line">       &#125;);</span><br><span class="line">       //console.log(title)</span><br><span class="line">       await wait(100);</span><br><span class="line">       parsePage(pageUrl,title)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">async function parsePage(pageUrl,title)&#123;</span><br><span class="line">    let res = await axios.get(pageUrl);</span><br><span class="line">    let $ = cheerio.load(res.data)</span><br><span class="line">    $(&#x27;.pic-content img&#x27;).each(async (i,element)=&gt;&#123;</span><br><span class="line">        let imgUrl = $(element).attr(&#x27;src&#x27;)</span><br><span class="line">       </span><br><span class="line">        //console.log(path.parse(imgUrl))</span><br><span class="line">        extName = path.extname(imgUrl)</span><br><span class="line">        //图片写入的路径和名字</span><br><span class="line">        await wait(50);</span><br><span class="line">        let imgPath = `./img/$&#123;title&#125;/$&#123;title&#125;-$&#123;i&#125;$&#123;extName&#125;`</span><br><span class="line">        //创建写入图片流</span><br><span class="line">        let ws = fs.createWriteStream(imgPath)</span><br><span class="line">        axios.get(imgUrl,&#123;responseType:&#x27;stream&#x27;&#125;).then(function(res)&#123;</span><br><span class="line">            res.data.pipe(ws)</span><br><span class="line">            console.log(&quot;图片加载完成：&quot;+imgPath)</span><br><span class="line">            //关闭写入流</span><br><span class="line">            res.data.on(&#x27;close&#x27;,function()&#123;</span><br><span class="line">                ws.close()</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;)</span><br><span class="line">        </span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">spider()</span><br></pre></td></tr></table></figure>
 ]]></content>
-  </entry>
-  <entry>
-    <title></title>
-    <url>/2023/01/07/Node2020%E7%AC%94%E8%AE%B0%EF%BC%885%EF%BC%89/</url>
-    <content><![CDATA[<h1 id="Node学习笔记（四）"><a href="#Node学习笔记（四）" class="headerlink" title="Node学习笔记（四）"></a>Node学习笔记（四）</h1><h2 id="http模块"><a href="#http模块" class="headerlink" title="http模块"></a>http模块</h2>]]></content>
-  </entry>
-  <entry>
-    <title></title>
-    <url>/2023/01/07/Typescript%EF%BC%88%E4%B8%80%EF%BC%89/</url>
-    <content><![CDATA[<h4 id="typescript中为了使编写的代码更规范，更有利于维护，增加了类型检验-写ts代码必须指定类型"><a href="#typescript中为了使编写的代码更规范，更有利于维护，增加了类型检验-写ts代码必须指定类型" class="headerlink" title="typescript中为了使编写的代码更规范，更有利于维护，增加了类型检验,写ts代码必须指定类型"></a>typescript中为了使编写的代码更规范，更有利于维护，增加了类型检验,写ts代码必须指定类型</h4><h3 id="typescript数据类型"><a href="#typescript数据类型" class="headerlink" title="typescript数据类型"></a>typescript数据类型</h3><ul>
-<li> 布尔类型（boolean）</li>
-<li>   数字类型（number）</li>
-<li>   字符串类型（string）</li>
-<li>   数组类型（Array）</li>
-<li>   元组类型（tuple）</li>
-<li>   枚举类型（enum）</li>
-<li>   任意类型（any）</li>
-<li>   null和undefined</li>
-<li>   void类型</li>
-<li>   never类型</li>
-<li><h4 id="布尔类型"><a href="#布尔类型" class="headerlink" title="布尔类型"></a>布尔类型</h4></li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var flag: boolean = true;</span><br><span class="line">// flag=123   错误写法</span><br><span class="line">flag = false</span><br><span class="line"></span><br><span class="line">console.log(flag)</span><br></pre></td></tr></table></figure>
-
-<p>//数字类型</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var num: number = 123;</span><br><span class="line">console.log(num);</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var str: string = &#x27;this is ts&#x27;;</span><br><span class="line"></span><br><span class="line">str = &quot;lalala&quot;;</span><br><span class="line">console.log(str);</span><br></pre></td></tr></table></figure>
-
-<h4 id="数组类型"><a href="#数组类型" class="headerlink" title="数组类型"></a>数组类型</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//数组 ts中定义数组有两种方式</span><br><span class="line"></span><br><span class="line">//1.第一种</span><br><span class="line">// var arr=[&#x27;1&#x27;,&#x27;2&#x27;];  //es5定义数组</span><br><span class="line">var arr: number[] = [11, 22, 443];</span><br><span class="line">console.log(arr);</span><br><span class="line"></span><br><span class="line">//第二种</span><br><span class="line">var arr1: Array&lt;number&gt; = [11, 33, 523]</span><br><span class="line">console.log(arr1);</span><br><span class="line"></span><br><span class="line">//第三种</span><br><span class="line">var arr4:any[]=[&#x27;123213&#x27;,22,true];</span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="元组类型（tuple）-属于数组的一种"><a href="#元组类型（tuple）-属于数组的一种" class="headerlink" title="元组类型（tuple） 属于数组的一种"></a>元组类型（tuple） 属于数组的一种</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let arr3: [number, string] = [123, &#x27;4232&#x27;];</span><br><span class="line"></span><br><span class="line">console.log(arr3);</span><br></pre></td></tr></table></figure>
-
-
-<p>//枚举类型</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">enum Flag &#123;</span><br><span class="line">    success,</span><br><span class="line">    error</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let f: Flag = Flag.error</span><br><span class="line">console.log(f);</span><br><span class="line"></span><br><span class="line">enum Color &#123;</span><br><span class="line">    blue, red = 3, &#x27;orange&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var c: Color = Color.blue;</span><br><span class="line">console.log(c);  //0  如果标识符没有赋值  它的值就是下标</span><br><span class="line"></span><br><span class="line">enum Err &#123;</span><br><span class="line">    &#x27;undefined&#x27; = -1, &#x27;null&#x27; = -2,</span><br><span class="line">    &#x27;success&#x27; = 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var e: Err = Err.success</span><br><span class="line">console.log(e)</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="任意类型"><a href="#任意类型" class="headerlink" title="任意类型"></a>任意类型</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var num1: any = 123;</span><br><span class="line">num1 = &#x27;str&#x27;;</span><br><span class="line">num1 = true;</span><br><span class="line">console.log(num1)</span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="任意类型的用途"><a href="#任意类型的用途" class="headerlink" title="任意类型的用途"></a>任意类型的用途</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var oBox: any = document.getElementById(&#x27;box&#x27;);</span><br><span class="line">oBox.style.color = &#x27;red&#x27;;</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="null-和undefined-其他（never类型）数据类型的子类型"><a href="#null-和undefined-其他（never类型）数据类型的子类型" class="headerlink" title="null 和undefined  其他（never类型）数据类型的子类型"></a>null 和undefined  其他（never类型）数据类型的子类型</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var num3: undefined;// console.log(num3);  //正确</span><br><span class="line"></span><br><span class="line"> var num3:number |undefined;  //定义没有赋值就是undefined</span><br><span class="line"> num3=123</span><br><span class="line"> console.log(num3)</span><br><span class="line"></span><br><span class="line"> var num2:null;</span><br><span class="line"> num2=null;</span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="一个元素可能是number类型-可能是null-可能是undefined"><a href="#一个元素可能是number类型-可能是null-可能是undefined" class="headerlink" title="一个元素可能是number类型 可能是null 可能是undefined"></a>一个元素可能是number类型 可能是null 可能是undefined</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var num2: number | null | undefined;</span><br><span class="line"> num2 = 1234;</span><br><span class="line">console.log(num)</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="void-类型：typescript中的void表示没有任何类型，一般用于定义方法的时候没有返回值。"><a href="#void-类型：typescript中的void表示没有任何类型，一般用于定义方法的时候没有返回值。" class="headerlink" title="void 类型：typescript中的void表示没有任何类型，一般用于定义方法的时候没有返回值。"></a>void 类型：typescript中的void表示没有任何类型，一般用于定义方法的时候没有返回值。</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// es5的写法</span><br><span class="line"> function run() &#123;</span><br><span class="line">     console.log(&quot;run&quot;)</span><br><span class="line"> &#125;</span><br><span class="line"> run();</span><br><span class="line"></span><br><span class="line">//表示方法没有返回任何类型</span><br><span class="line"> function run():void &#123;</span><br><span class="line">     console.log(&quot;run&quot;)</span><br><span class="line"> &#125;</span><br><span class="line"> run();</span><br><span class="line"></span><br><span class="line">//正确写法</span><br><span class="line">function run(): number &#123;</span><br><span class="line">    console.log(&quot;run&quot;)</span><br><span class="line">    return 123</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">run();</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="never类型："><a href="#never类型：" class="headerlink" title="never类型："></a>never类型：</h4><h5 id="是其他类型（包括null和undefined）的子类型，代表从不会出现的值，这意味着声明never只能被never类型所赋值"><a href="#是其他类型（包括null和undefined）的子类型，代表从不会出现的值，这意味着声明never只能被never类型所赋值" class="headerlink" title="是其他类型（包括null和undefined）的子类型，代表从不会出现的值，这意味着声明never只能被never类型所赋值"></a>是其他类型（包括null和undefined）的子类型，代表从不会出现的值，这意味着声明never只能被never类型所赋值</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var a: undefined;</span><br><span class="line">a = undefined  //正确</span><br><span class="line"></span><br><span class="line">var b: null;</span><br><span class="line">// b=undefined 报错</span><br><span class="line">b = null; //正确</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var abc:never;</span><br><span class="line">abc=(()=&gt;&#123;</span><br><span class="line">    throw  new Error(&#x27;错误&#x27;)</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
-]]></content>
+      <categories>
+        <category>Nodejs</category>
+      </categories>
+      <tags>
+        <tag>Node</tag>
+        <tag>前端</tag>
+      </tags>
   </entry>
   <entry>
     <title>SpringBoot学习（一）</title>
@@ -304,7 +272,69 @@
       </tags>
   </entry>
   <entry>
-    <title></title>
+    <title>Typescript初学习（一）</title>
+    <url>/2023/01/07/Typescript%EF%BC%88%E4%B8%80%EF%BC%89/</url>
+    <content><![CDATA[<h4 id="typescript中为了使编写的代码更规范，更有利于维护，增加了类型检验-写ts代码必须指定类型"><a href="#typescript中为了使编写的代码更规范，更有利于维护，增加了类型检验-写ts代码必须指定类型" class="headerlink" title="typescript中为了使编写的代码更规范，更有利于维护，增加了类型检验,写ts代码必须指定类型"></a>typescript中为了使编写的代码更规范，更有利于维护，增加了类型检验,写ts代码必须指定类型</h4><h3 id="typescript数据类型"><a href="#typescript数据类型" class="headerlink" title="typescript数据类型"></a>typescript数据类型</h3><ul>
+<li> 布尔类型（boolean）</li>
+<li>   数字类型（number）</li>
+<li>   字符串类型（string）</li>
+<li>   数组类型（Array）</li>
+<li>   元组类型（tuple）</li>
+<li>   枚举类型（enum）</li>
+<li>   任意类型（any）</li>
+<li>   null和undefined</li>
+<li>   void类型</li>
+<li>   never类型</li>
+<li><h4 id="布尔类型"><a href="#布尔类型" class="headerlink" title="布尔类型"></a>布尔类型</h4></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var flag: boolean = true;</span><br><span class="line">// flag=123   错误写法</span><br><span class="line">flag = false</span><br><span class="line"></span><br><span class="line">console.log(flag)</span><br></pre></td></tr></table></figure>
+
+<p>//数字类型</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var num: number = 123;</span><br><span class="line">console.log(num);</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var str: string = &#x27;this is ts&#x27;;</span><br><span class="line"></span><br><span class="line">str = &quot;lalala&quot;;</span><br><span class="line">console.log(str);</span><br></pre></td></tr></table></figure>
+
+<h4 id="数组类型"><a href="#数组类型" class="headerlink" title="数组类型"></a>数组类型</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//数组 ts中定义数组有两种方式</span><br><span class="line"></span><br><span class="line">//1.第一种</span><br><span class="line">// var arr=[&#x27;1&#x27;,&#x27;2&#x27;];  //es5定义数组</span><br><span class="line">var arr: number[] = [11, 22, 443];</span><br><span class="line">console.log(arr);</span><br><span class="line"></span><br><span class="line">//第二种</span><br><span class="line">var arr1: Array&lt;number&gt; = [11, 33, 523]</span><br><span class="line">console.log(arr1);</span><br><span class="line"></span><br><span class="line">//第三种</span><br><span class="line">var arr4:any[]=[&#x27;123213&#x27;,22,true];</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="元组类型（tuple）-属于数组的一种"><a href="#元组类型（tuple）-属于数组的一种" class="headerlink" title="元组类型（tuple） 属于数组的一种"></a>元组类型（tuple） 属于数组的一种</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let arr3: [number, string] = [123, &#x27;4232&#x27;];</span><br><span class="line"></span><br><span class="line">console.log(arr3);</span><br></pre></td></tr></table></figure>
+
+
+<p>//枚举类型</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">enum Flag &#123;</span><br><span class="line">    success,</span><br><span class="line">    error</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let f: Flag = Flag.error</span><br><span class="line">console.log(f);</span><br><span class="line"></span><br><span class="line">enum Color &#123;</span><br><span class="line">    blue, red = 3, &#x27;orange&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var c: Color = Color.blue;</span><br><span class="line">console.log(c);  //0  如果标识符没有赋值  它的值就是下标</span><br><span class="line"></span><br><span class="line">enum Err &#123;</span><br><span class="line">    &#x27;undefined&#x27; = -1, &#x27;null&#x27; = -2,</span><br><span class="line">    &#x27;success&#x27; = 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var e: Err = Err.success</span><br><span class="line">console.log(e)</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="任意类型"><a href="#任意类型" class="headerlink" title="任意类型"></a>任意类型</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var num1: any = 123;</span><br><span class="line">num1 = &#x27;str&#x27;;</span><br><span class="line">num1 = true;</span><br><span class="line">console.log(num1)</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="任意类型的用途"><a href="#任意类型的用途" class="headerlink" title="任意类型的用途"></a>任意类型的用途</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var oBox: any = document.getElementById(&#x27;box&#x27;);</span><br><span class="line">oBox.style.color = &#x27;red&#x27;;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="null-和undefined-其他（never类型）数据类型的子类型"><a href="#null-和undefined-其他（never类型）数据类型的子类型" class="headerlink" title="null 和undefined  其他（never类型）数据类型的子类型"></a>null 和undefined  其他（never类型）数据类型的子类型</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var num3: undefined;// console.log(num3);  //正确</span><br><span class="line"></span><br><span class="line"> var num3:number |undefined;  //定义没有赋值就是undefined</span><br><span class="line"> num3=123</span><br><span class="line"> console.log(num3)</span><br><span class="line"></span><br><span class="line"> var num2:null;</span><br><span class="line"> num2=null;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="一个元素可能是number类型-可能是null-可能是undefined"><a href="#一个元素可能是number类型-可能是null-可能是undefined" class="headerlink" title="一个元素可能是number类型 可能是null 可能是undefined"></a>一个元素可能是number类型 可能是null 可能是undefined</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var num2: number | null | undefined;</span><br><span class="line"> num2 = 1234;</span><br><span class="line">console.log(num)</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="void-类型：typescript中的void表示没有任何类型，一般用于定义方法的时候没有返回值。"><a href="#void-类型：typescript中的void表示没有任何类型，一般用于定义方法的时候没有返回值。" class="headerlink" title="void 类型：typescript中的void表示没有任何类型，一般用于定义方法的时候没有返回值。"></a>void 类型：typescript中的void表示没有任何类型，一般用于定义方法的时候没有返回值。</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// es5的写法</span><br><span class="line"> function run() &#123;</span><br><span class="line">     console.log(&quot;run&quot;)</span><br><span class="line"> &#125;</span><br><span class="line"> run();</span><br><span class="line"></span><br><span class="line">//表示方法没有返回任何类型</span><br><span class="line"> function run():void &#123;</span><br><span class="line">     console.log(&quot;run&quot;)</span><br><span class="line"> &#125;</span><br><span class="line"> run();</span><br><span class="line"></span><br><span class="line">//正确写法</span><br><span class="line">function run(): number &#123;</span><br><span class="line">    console.log(&quot;run&quot;)</span><br><span class="line">    return 123</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">run();</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="never类型："><a href="#never类型：" class="headerlink" title="never类型："></a>never类型：</h4><h5 id="是其他类型（包括null和undefined）的子类型，代表从不会出现的值，这意味着声明never只能被never类型所赋值"><a href="#是其他类型（包括null和undefined）的子类型，代表从不会出现的值，这意味着声明never只能被never类型所赋值" class="headerlink" title="是其他类型（包括null和undefined）的子类型，代表从不会出现的值，这意味着声明never只能被never类型所赋值"></a>是其他类型（包括null和undefined）的子类型，代表从不会出现的值，这意味着声明never只能被never类型所赋值</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var a: undefined;</span><br><span class="line">a = undefined  //正确</span><br><span class="line"></span><br><span class="line">var b: null;</span><br><span class="line">// b=undefined 报错</span><br><span class="line">b = null; //正确</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var abc:never;</span><br><span class="line">abc=(()=&gt;&#123;</span><br><span class="line">    throw  new Error(&#x27;错误&#x27;)</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Typescript</category>
+      </categories>
+      <tags>
+        <tag>前端</tag>
+        <tag>Typescript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Typescript初学习（三）</title>
     <url>/2023/01/07/Typescript%EF%BC%88%E4%B8%89%EF%BC%89/</url>
     <content><![CDATA[<h2 id="Typescript的类"><a href="#Typescript的类" class="headerlink" title="Typescript的类"></a>Typescript的类</h2><h3 id="复习ES5中的类"><a href="#复习ES5中的类" class="headerlink" title="复习ES5中的类"></a>复习ES5中的类</h3><h4 id="1-最简单的类"><a href="#1-最简单的类" class="headerlink" title="1.最简单的类"></a>1.最简单的类</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">function Person() &#123;</span><br><span class="line">    this.name = &#x27;张三&#x27;;</span><br><span class="line">    this.age = 20;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var p = new Person();</span><br><span class="line">console.log(p.name);</span><br></pre></td></tr></table></figure>
 
@@ -348,9 +378,28 @@
 <h4 id="6-抽象类-用abstract关键字定义抽象类和抽象方法，抽象类中的抽象方法不包含具体实现并且必须在派生类中实现"><a href="#6-抽象类-用abstract关键字定义抽象类和抽象方法，抽象类中的抽象方法不包含具体实现并且必须在派生类中实现" class="headerlink" title="6.抽象类  用abstract关键字定义抽象类和抽象方法，抽象类中的抽象方法不包含具体实现并且必须在派生类中实现"></a>6.抽象类  用abstract关键字定义抽象类和抽象方法，抽象类中的抽象方法不包含具体实现并且必须在派生类中实现</h4><h5 id="abstract抽象方法只能放在抽象类里面"><a href="#abstract抽象方法只能放在抽象类里面" class="headerlink" title="abstract抽象方法只能放在抽象类里面"></a>abstract抽象方法只能放在抽象类里面</h5><h5 id="抽象类和抽象方法用来定义标准"><a href="#抽象类和抽象方法用来定义标准" class="headerlink" title="抽象类和抽象方法用来定义标准"></a>抽象类和抽象方法用来定义标准</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">abstract class Animal &#123;</span><br><span class="line">    public name: string;</span><br><span class="line">    constructor(name: string) &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    abstract eat(): any;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Dog extends Animal &#123;</span><br><span class="line"></span><br><span class="line">    //抽象类的子类必须实现抽象类里面的抽象方法</span><br><span class="line">    constructor(name: any) &#123;</span><br><span class="line">        super(name)</span><br><span class="line">    &#125;</span><br><span class="line">    eat() &#123;</span><br><span class="line">        console.log(this.name + &#x27;吃粮食&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var d=new Dog(&#x27;小狗&#x27;);</span><br><span class="line"></span><br><span class="line">d.eat();</span><br></pre></td></tr></table></figure>
 
 ]]></content>
+      <categories>
+        <category>Typescript</category>
+      </categories>
+      <tags>
+        <tag>前端</tag>
+        <tag>Typescript</tag>
+      </tags>
   </entry>
   <entry>
-    <title></title>
+    <title>Typescript初学习（四）</title>
+    <url>/2023/01/07/Typescript%EF%BC%88%E5%9B%9B%EF%BC%89/</url>
+    <content><![CDATA[<h3 id="Typescript接口"><a href="#Typescript接口" class="headerlink" title="Typescript接口"></a>Typescript接口</h3>]]></content>
+      <categories>
+        <category>Typescript</category>
+      </categories>
+      <tags>
+        <tag>前端</tag>
+        <tag>Typescript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Typescript初学习（二）</title>
     <url>/2023/01/07/Typescript%EF%BC%88%E4%BA%8C%EF%BC%89/</url>
     <content><![CDATA[<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><h4 id="3-1-函数的定义"><a href="#3-1-函数的定义" class="headerlink" title="3.1 函数的定义"></a>3.1 函数的定义</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//es5定义函数的方法</span><br><span class="line"></span><br><span class="line">//函数声明法</span><br><span class="line">function run()&#123;</span><br><span class="line">    return &#x27;run&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//匿名函数</span><br><span class="line">var run2 = function () &#123;</span><br><span class="line">    return &#x27;run2&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//ts中定义函数的方法</span><br><span class="line"></span><br><span class="line">//函数声明法</span><br><span class="line">function fun1(): string &#123;</span><br><span class="line">    return &#x27;run&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//匿名函数</span><br><span class="line">var fun2 = function (): number &#123;</span><br><span class="line">    return 123;</span><br><span class="line">&#125;</span><br><span class="line">fun2();   //调用方法</span><br><span class="line"></span><br><span class="line">//ts中定义方法传参</span><br><span class="line">function getInfo(name: string, age: number): string &#123;</span><br><span class="line">    return `$&#123;name&#125; --- $&#123;age&#125;`</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">alert(getInfo(&#x27;zhangsan&#x27;,12));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var getInfo=function (name:string,age:number):string &#123;</span><br><span class="line">    return `$&#123;name&#125;--$&#123;age&#125;`;</span><br><span class="line">&#125;</span><br><span class="line">alert(getInfo(&#x27;zhangsan&#x27;,13));</span><br><span class="line"></span><br><span class="line">//没有返回值的方法</span><br><span class="line">function  fun3():void &#123;</span><br><span class="line">    console.log(&quot;run&quot;)</span><br><span class="line">&#125;</span><br><span class="line">fun3();</span><br></pre></td></tr></table></figure>
 
@@ -369,6 +418,13 @@
 <h4 id="3-6-箭头函数"><a href="#3-6-箭头函数" class="headerlink" title="3.6 箭头函数"></a>3.6 箭头函数</h4><h5 id="this指向问题-箭头函数里this指向上下文"><a href="#this指向问题-箭头函数里this指向上下文" class="headerlink" title="this指向问题  箭头函数里this指向上下文"></a>this指向问题  箭头函数里this指向上下文</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">setTimeout(()=&gt;&#123;</span><br><span class="line">    console.log(123)</span><br><span class="line">&#125;,1000)</span><br></pre></td></tr></table></figure>
 
 ]]></content>
+      <categories>
+        <category>Typescript</category>
+      </categories>
+      <tags>
+        <tag>前端</tag>
+        <tag>Typescript</tag>
+      </tags>
   </entry>
   <entry>
     <title>数据结构（一）</title>
@@ -409,7 +465,7 @@
 </ul>
 ]]></content>
       <categories>
-        <category>考研</category>
+        <category>数据结构</category>
       </categories>
       <tags>
         <tag>考研</tag>
@@ -417,28 +473,11 @@
       </tags>
   </entry>
   <entry>
-    <title>软件工程导论（一）</title>
-    <url>/2022/04/14/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%E5%AF%BC%E8%AE%BA%EF%BC%88%E4%B8%80%EF%BC%89/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>考研</category>
-      </categories>
-      <tags>
-        <tag>考研</tag>
-        <tag>软件工程</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title></title>
-    <url>/2023/01/07/Typescript%EF%BC%88%E5%9B%9B%EF%BC%89/</url>
-    <content><![CDATA[<h3 id="Typescript接口"><a href="#Typescript接口" class="headerlink" title="Typescript接口"></a>Typescript接口</h3>]]></content>
-  </entry>
-  <entry>
     <title>数据结构（二）</title>
     <url>/2022/02/06/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%88%E4%BA%8C%EF%BC%89/</url>
     <content><![CDATA[<h2 id="第2章-线性表"><a href="#第2章-线性表" class="headerlink" title="第2章 线性表"></a>第2章 线性表</h2>]]></content>
       <categories>
-        <category>考研</category>
+        <category>数据结构</category>
       </categories>
       <tags>
         <tag>考研</tag>
