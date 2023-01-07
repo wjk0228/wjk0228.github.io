@@ -1,6 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title></title>
+    <url>/2023/01/07/Node2020%E7%AC%94%E8%AE%B0%EF%BC%882%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="Node学习笔记（二）"><a href="#Node学习笔记（二）" class="headerlink" title="Node学习笔记（二）"></a>Node学习笔记（二）</h1><h2 id="Node事件循环"><a href="#Node事件循环" class="headerlink" title="Node事件循环"></a>Node事件循环</h2><p>Node.js 是单进程单线程应用程序，但是因为<br>V8引擎提供的异步执行回调接口，通过这些接口可以处理大量的并发，所以性能非常高。</p>
+<p>Node.js 几乎每一个 API 都是支持回调函数的。</p>
+<p>Node.js 基本上所有的事件机制都是用设计模式中观察者模式实现。</p>
+<p>Node.js 单线程类似进入一个while(true)的事件循环，直到没有事件观察者退出，每个异步事件都生成一个事件观察者，如果有事件发生就调用该回调函数.</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">开启进程</span><br><span class="line">开启线程</span><br><span class="line">初始化数据，window/document/location...</span><br><span class="line">while(true)&#123;</span><br><span class="line">    </span><br><span class="line">    初始化事件列表</span><br><span class="line">    根据事件修改数据</span><br><span class="line">    根据数据去渲染页面</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    if(count=0)&#123;</span><br><span class="line">        运行js代码</span><br><span class="line">        btn.onclick = function()&#123;</span><br><span class="line">            document.body.style.background = &quot;skyblue&quot;</span><br><span class="line">            console.log(123)</span><br><span class="line">        &#125;</span><br><span class="line">        console.log(456)</span><br><span class="line">        count++</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="事件驱动程序"><a href="#事件驱动程序" class="headerlink" title="事件驱动程序"></a>事件驱动程序</h3><p>Node.js 使用事件驱动模型，当web server接收到请求，就把它关闭然后进行处理，然后去服务下一个web请求。</p>
+<p>当这个请求完成，它被放回处理队列，当到达队列开头，这个结果被返回给用户。</p>
+<p>这个模型非常高效可扩展性非常强，因为 webserver 一直接受请求而不等待任何读写操作。（这也称之为非阻塞式IO或者事件驱动IO）</p>
+<p>在事件驱动模型中，会生成一个主循环来监听事件，当检测到事件时触发回调函数。</p>
+<p>Node.js 有多个内置的事件，我们可以通过引入 events 模块，并通过实例化 EventEmitter 类来绑定和监听事件，如下实例：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 引入 events 模块</span><br><span class="line">var events = require(&#x27;events&#x27;);</span><br><span class="line">// 创建 eventEmitter 对象</span><br><span class="line">var eventEmitter = new events.EventEmitter();</span><br><span class="line">以下程序绑定事件处理程序：</span><br><span class="line"></span><br><span class="line">// 绑定事件及事件的处理程序</span><br><span class="line">eventEmitter.on(&#x27;eventName&#x27;, eventHandler);</span><br><span class="line">我们可以通过程序触发事件：</span><br><span class="line"></span><br><span class="line">// 触发事件</span><br><span class="line">eventEmitter.emit(&#x27;eventName&#x27;);</span><br></pre></td></tr></table></figure>
+<h4 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h4><p>创建 main.js 文件，代码如下所示：</p>
+<h5 id="实例-1"><a href="#实例-1" class="headerlink" title="实例"></a>实例</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 引入 events 模块</span><br><span class="line">var events = require(&#x27;events&#x27;);</span><br><span class="line">// 创建 eventEmitter 对象</span><br><span class="line">var eventEmitter = new events.EventEmitter();</span><br><span class="line"> </span><br><span class="line">// 创建事件处理程序</span><br><span class="line">var connectHandler = function connected() &#123;</span><br><span class="line">   console.log(&#x27;连接成功。&#x27;);</span><br><span class="line">  </span><br><span class="line">   // 触发 data_received 事件 </span><br><span class="line">   eventEmitter.emit(&#x27;data_received&#x27;);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">// 绑定 connection 事件处理程序</span><br><span class="line">eventEmitter.on(&#x27;connection&#x27;, connectHandler);</span><br><span class="line"> </span><br><span class="line">// 使用匿名函数绑定 data_received 事件</span><br><span class="line">eventEmitter.on(&#x27;data_received&#x27;, function()&#123;</span><br><span class="line">   console.log(&#x27;数据接收成功。&#x27;);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">// 触发 connection 事件 </span><br><span class="line">eventEmitter.emit(&#x27;connection&#x27;);</span><br><span class="line"> </span><br><span class="line">console.log(&quot;程序执行完毕。&quot;);</span><br></pre></td></tr></table></figure>
+<p>接下来让我们执行以上代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ node main.js</span><br><span class="line">连接成功。</span><br><span class="line">数据接收成功。</span><br><span class="line">程序执行完毕。</span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2023/01/07/Node2020%E7%AC%94%E8%AE%B0%EF%BC%883%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="Node学习笔记（三）"><a href="#Node学习笔记（三）" class="headerlink" title="Node学习笔记（三）"></a>Node学习笔记（三）</h1><h2 id="path模块"><a href="#path模块" class="headerlink" title="path模块"></a>path模块</h2><ul>
+<li>path.resolve([…paths])把一个路径或路径片段得多序列解析为一个绝对路径<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">path.resolve(&#x27;foo&#x27;,&#x27;/baz&#x27;,&#x27;bar&#x27;);</span><br><span class="line">//C:\baz\bar</span><br></pre></td></tr></table></figure></li>
+<li>path.join([…paths])方法使用平台特定的分隔符吧所有全部给定的path拼接到一起，并规范化生成的路径。<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let path = require(&quot;path&quot;)</span><br><span class="line">let fs = require(&quot;fs&quot;)</span><br><span class="line"></span><br><span class="line">console.log(path)</span><br><span class="line"></span><br><span class="line">let strPath = &quot;http://www.newsimg.cn/xjp20171103/images/xjp_banner.jpg&quot;;</span><br><span class="line">//获取路径信息的扩展名</span><br><span class="line">let info =path.extname(strPath)</span><br><span class="line">console.log(info)</span><br><span class="line"></span><br><span class="line">let arr = [&#x27;/sxt&#x27;,&#x27;qianduan&#x27;,&quot;zhongji&quot;]</span><br><span class="line">let info1 = path.resolve(...arr)</span><br><span class="line">console.log(info1)</span><br><span class="line"></span><br><span class="line">//获取当前执行目录的完整路径</span><br><span class="line">console.log(__dirname)</span><br><span class="line">let info2 = path.join(__dirname,&#x27;sxt&#x27;,&#x27;qianduan&#x27;,&#x27;zhongji&#x27;)</span><br><span class="line">console.log(info2)</span><br><span class="line"></span><br><span class="line">//</span><br><span class="line">let str = &quot;http://www.sxt.com/xinwen/guonei.html&quot;;</span><br><span class="line"></span><br><span class="line">//解析出请求目录</span><br><span class="line">let arrParse = str.split(&#x27;/&#x27;)</span><br><span class="line">console.log(arrParse)</span><br><span class="line">arr = arrParse.slice(arrParse.length-2,arrParse.length)</span><br><span class="line">console.log(arr)</span><br><span class="line"></span><br><span class="line">let filePath = path.join(__dirname,...arr)</span><br><span class="line">console.log(filePath)</span><br><span class="line">fs.readFile(filePath,&#123;encoding:&#x27;utf-8&#x27;&#125;,function(err,data)&#123;</span><br><span class="line">    if(err)&#123;</span><br><span class="line">        console.log(err)</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        console.log(data)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let path = require(&#x27;path&#x27;)</span><br><span class="line"></span><br><span class="line">//获取当前执行文件的目录</span><br><span class="line">console.log(__dirname)</span><br><span class="line"></span><br><span class="line">//获取当前的执行文件</span><br><span class="line">console.log(__filename)</span><br><span class="line"></span><br><span class="line">console.log(path.extname(__filename))</span><br><span class="line">//解析路径，可以将路径信息直接解析出来,解析出根路径，目录，扩展名，文件名称，文件名，扩展名</span><br><span class="line">console.log(path.parse(__filename))</span><br></pre></td></tr></table></figure>
+<h3 id="os模块"><a href="#os模块" class="headerlink" title="os模块"></a>os模块</h3><p>· os.totalmem() 获取内存大小</p>
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2023/01/07/Node2020%E7%AC%94%E8%AE%B0%EF%BC%881%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="Node学习笔记（一）"><a href="#Node学习笔记（一）" class="headerlink" title="Node学习笔记（一）"></a>Node学习笔记（一）</h1><h3 id="1-Node的简介"><a href="#1-Node的简介" class="headerlink" title="1.Node的简介"></a>1.Node的简介</h3><p>Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境，nodejs允许javascript代码运行在服务端</p>
+<ul>
+<li>单线程</li>
+<li>非阻塞I/O</li>
+<li>事件驱动<h4 id="单线程"><a href="#单线程" class="headerlink" title="单线程"></a>单线程</h4>单线程：不再有线程的创建、销毁的时间开销。<br>单线程也能造成宏观上的“并发”<h4 id="非阻塞I-O"><a href="#非阻塞I-O" class="headerlink" title="非阻塞I/O"></a>非阻塞I/O</h4>I/O阻塞了代码的执行，极大地降低了程序的执行效率。而非阻塞模式下，一个线程永远在执行计算操作，这个线程的CPU核心利用率永远是100%。</li>
+</ul>
+<h3 id="2-模块化系统"><a href="#2-模块化系统" class="headerlink" title="2.模块化系统"></a>2.模块化系统</h3><p>导入导出<br>Node.js中的模块分类：</p>
+<ul>
+<li>核心模块（已封装好的内置模块）</li>
+<li>自己定义模块</li>
+<li>第三方模块</li>
+</ul>
+<ol>
+<li>Node中每个模块都有一个module对象，module对象中的有一个exports属性为一个接口对象，我们需要把模块之间公共的方法或属性挂载在这个接口对象中，方便其他的模块使用这些公共的方法或属性。</li>
+<li>Node中每个模块的最后，都会return: module.exports。</li>
+<li>Node中每个模块都会把module.exports指向的对象赋值给一个变量exports，也就是说：exports = module.exports。</li>
+<li>module.exports = XXX，表示当前模块导出一个单一成员，结果就是XXX。</li>
+<li>如果需要导出多个成员时必须使用exports.add = XXX;exports.foo=XXX;或者使用module.exports.add = XXX; module.export.foo = XXX;。</li>
+</ol>
+<h3 id="3-fs模块"><a href="#3-fs模块" class="headerlink" title="3.fs模块"></a>3.fs模块</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var fs= require(&#x27;fs&#x27;);</span><br><span class="line">//导入文件模块  node读写文件也有同步和异步的接口 </span><br><span class="line"></span><br><span class="line">//同步</span><br><span class="line">var content=fs.readFileSync(&#x27;hello.txt&#x27;,&#123;flag:&#x27;r&#x27;,encoding:&#x27;utf-8&#x27;&#125;)</span><br><span class="line">//异步</span><br><span class="line">fs.readFile(&#x27;hello.txt&#x27;,&#123;flag:&#x27;r&#x27;,encoding:&#x27;utf-8&#x27;&#125;,function(data,err)&#123;</span><br><span class="line">    if(err)&#123;</span><br><span class="line">        console.log(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line">fs.readSync()</span><br></pre></td></tr></table></figure>
+
+<h3 id="fs模块综合封装"><a href="#fs模块综合封装" class="headerlink" title="fs模块综合封装"></a>fs模块综合封装</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let fs = require(&#x27;fs&#x27;)</span><br><span class="line">function fsRead(path)&#123;</span><br><span class="line">    return new Promise(function(resolve,reject)&#123;</span><br><span class="line">        fs.readFile(path,&#123;flag:&#x27;r&#x27;,encoding:&quot;utf-8&quot;&#125;,function(err,data)&#123;</span><br><span class="line">            if(err)&#123;</span><br><span class="line">                //console.log(err)</span><br><span class="line">                //失败执行的内容</span><br><span class="line">                reject(err)</span><br><span class="line"></span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                //console.log(data)</span><br><span class="line">                //成功执行的内容</span><br><span class="line">                resolve(data)</span><br><span class="line">            &#125;</span><br><span class="line">            //console.log(456)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function fsWrite(path,content)&#123;</span><br><span class="line">    return new Promise(function(resolve,reject)&#123;</span><br><span class="line">        fs.writeFile(path,content,&#123;flag:&quot;a&quot;,encoding:&quot;utf-8&quot;&#125;,function(err)&#123;</span><br><span class="line">            if(err)&#123;</span><br><span class="line">                //console.log(&quot;写入内容出错&quot;)</span><br><span class="line">                reject(err)</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                resolve(err)</span><br><span class="line">                //console.log(&quot;写入内容成功&quot;)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function fsDir(path)&#123;</span><br><span class="line">    return new Promise(function(resolve,reject)&#123;</span><br><span class="line">        fs.mkdir(path,function(err)&#123;</span><br><span class="line">            if(err)&#123;</span><br><span class="line">                reject(err)</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                resolve(&quot;成功创建目录&quot;)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module.exports = &#123;fsRead,fsWrite,fsDir&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Node-js-Stream-流"><a href="#Node-js-Stream-流" class="headerlink" title="Node.js Stream(流)"></a>Node.js Stream(流)</h3><p>Stream 是一个抽象接口，Node 中有很多对象实现了这个接口。例如，对http 服务器发起请求的request 对象就是一个 Stream，还有stdout（标准输出）。</p>
+<p>Node.js，Stream 有四种流类型：</p>
+<ul>
+<li>Readable - 可读操作。</li>
+<li>Writable - 可写操作。</li>
+<li>Duplex - 可读可写操作.</li>
+<li>Transform - 操作被写入数据，然后读出结果。</li>
+</ul>
+<p>所有的 Stream 对象都是 EventEmitter 的实例。常用的事件有：</p>
+<ul>
+<li>data - 当有数据可读时触发。</li>
+<li>end - 没有更多的数据可读时触发。</li>
+<li>error - 在接收和写入过程中发生错误时触发。</li>
+<li>finish - 所有数据已被写入到底层系统时触发。</li>
+<li>。</li>
+</ul>
+<p>从流中读取数据<br>创建 input.txt 文件，内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">www.sxt.com</span><br></pre></td></tr></table></figure>
+<p>创建 main.js 文件, 代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var fs = require(&quot;fs&quot;);</span><br><span class="line">var data = &#x27;&#x27;;</span><br><span class="line"></span><br><span class="line">// 创建可读流</span><br><span class="line">var readerStream = fs.createReadStream(&#x27;input.txt&#x27;);</span><br><span class="line"></span><br><span class="line">// 设置编码为 utf8。</span><br><span class="line">readerStream.setEncoding(&#x27;UTF8&#x27;);</span><br><span class="line"></span><br><span class="line">// 处理流事件 --&gt; data, end, and error</span><br><span class="line">readerStream.on(&#x27;data&#x27;, function(chunk) &#123;</span><br><span class="line">   data += chunk;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">readerStream.on(&#x27;end&#x27;,function()&#123;</span><br><span class="line">   console.log(data);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">readerStream.on(&#x27;error&#x27;, function(err)&#123;</span><br><span class="line">   console.log(err.stack);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">console.log(&quot;程序执行完毕&quot;);</span><br></pre></td></tr></table></figure>
+<p>以上代码执行结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">程序执行完毕地址：www.sxt.com</span><br></pre></td></tr></table></figure>
+<h3 id="写入流"><a href="#写入流" class="headerlink" title="写入流"></a>写入流</h3><p>创建 main.js 文件, 代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var fs = require(&quot;fs&quot;);</span><br><span class="line">var data = &#x27;www.sxt.com&#x27;;</span><br><span class="line"></span><br><span class="line">// 创建一个可以写入的流，写入到文件 output.txt 中</span><br><span class="line">var writerStream = fs.createWriteStream(&#x27;output.txt&#x27;);</span><br><span class="line"></span><br><span class="line">// 使用 utf8 编码写入数据</span><br><span class="line">writerStream.write(data,&#x27;UTF8&#x27;);</span><br><span class="line"></span><br><span class="line">// 标记文件末尾</span><br><span class="line">writerStream.end();</span><br><span class="line"></span><br><span class="line">// 处理流事件 --&gt; data, end, and error</span><br><span class="line">writerStream.on(&#x27;finish&#x27;, function() &#123;</span><br><span class="line">    console.log(&quot;写入完成。&quot;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">writerStream.on(&#x27;error&#x27;, function(err)&#123;</span><br><span class="line">   console.log(err.stack);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">console.log(&quot;程序执行完毕&quot;);</span><br></pre></td></tr></table></figure>
+<p>以上程序会将 data 变量的数据写入到 output.txt 文件中。代码执行结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ node main.js </span><br><span class="line">程序执行完毕</span><br><span class="line">写入完成。</span><br></pre></td></tr></table></figure>
+<p>查看 output.txt 文件的内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ cat output.txt </span><br><span class="line">www.sxt.com</span><br></pre></td></tr></table></figure>
+<h3 id="管道流"><a href="#管道流" class="headerlink" title="管道流"></a>管道流</h3><p>管道提供了一个输出流到输入流的机制。通常我们用于从一个流中获取数据并将数据传递到另外一个流中。</p>
+<p>以下实例我们通过读取一个文件内容并将内容写入到另外一个文件中。</p>
+<p>设置 input.txt 文件内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">教程官网地址：www.sxt.com</span><br><span class="line">管道流操作实例</span><br></pre></td></tr></table></figure>
+<p>创建 main.js 文件, 代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var fs = require(&quot;fs&quot;);</span><br><span class="line"></span><br><span class="line">// 创建一个可读流</span><br><span class="line">var readerStream = fs.createReadStream(&#x27;input.txt&#x27;);</span><br><span class="line"></span><br><span class="line">// 创建一个可写流</span><br><span class="line">var writerStream = fs.createWriteStream(&#x27;output.txt&#x27;);</span><br><span class="line"></span><br><span class="line">// 管道读写操作</span><br><span class="line">// 读取 input.txt 文件内容，并将内容写入到 output.txt 文件中</span><br><span class="line">readerStream.pipe(writerStream);</span><br><span class="line"></span><br><span class="line">console.log(&quot;程序执行完毕&quot;);</span><br></pre></td></tr></table></figure>
+<p>代码执行结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ node main.js </span><br><span class="line">程序执行完毕</span><br></pre></td></tr></table></figure>
+<p>查看 output.txt 文件的内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ cat output.txt </span><br><span class="line">教程官网地址：www.sxt.com</span><br><span class="line">管道流操作实例</span><br></pre></td></tr></table></figure>
+<h3 id="链式流"><a href="#链式流" class="headerlink" title="链式流"></a>链式流</h3><p>链式是通过连接输出流到另外一个流并创建多个流操作链的机制。链式流一般用于管道操作。</p>
+<p>接下来我们就是用管道和链式来压缩和解压文件。</p>
+<p>创建 compress.js 文件, 代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var fs = require(&quot;fs&quot;);</span><br><span class="line">var zlib = require(&#x27;zlib&#x27;);</span><br><span class="line"></span><br><span class="line">// 压缩 input.txt 文件为 input.txt.gz</span><br><span class="line">fs.createReadStream(&#x27;input.txt&#x27;)</span><br><span class="line">  .pipe(zlib.createGzip())</span><br><span class="line">  .pipe(fs.createWriteStream(&#x27;input.txt.gz&#x27;));</span><br><span class="line">  </span><br><span class="line">console.log(&quot;文件压缩完成。&quot;);</span><br></pre></td></tr></table></figure>
+<p>代码执行结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ node compress.js </span><br><span class="line">文件压缩完成。</span><br></pre></td></tr></table></figure>
+<p>执行完以上操作后，我们可以看到当前目录下生成了 input.txt 的压缩文件 input.txt.gz。</p>
+<p>接下来，让我们来解压该文件，创建 decompress.js 文件，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var fs = require(&quot;fs&quot;);</span><br><span class="line">var zlib = require(&#x27;zlib&#x27;);</span><br><span class="line"></span><br><span class="line">// 解压 input.txt.gz 文件为 input.txt</span><br><span class="line">fs.createReadStream(&#x27;input.txt.gz&#x27;)</span><br><span class="line">  .pipe(zlib.createGunzip())</span><br><span class="line">  .pipe(fs.createWriteStream(&#x27;input.txt&#x27;));</span><br><span class="line">  </span><br><span class="line">console.log(&quot;文件解压完成。&quot;);</span><br></pre></td></tr></table></figure>
+<p>代码执行结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ node decompress.js </span><br><span class="line">文件解压完成。</span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2023/01/07/Node2020%E7%AC%94%E8%AE%B0%EF%BC%885%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="Node学习笔记（四）"><a href="#Node学习笔记（四）" class="headerlink" title="Node学习笔记（四）"></a>Node学习笔记（四）</h1><h2 id="http模块"><a href="#http模块" class="headerlink" title="http模块"></a>http模块</h2>]]></content>
+  </entry>
+  <entry>
     <title>SpringBoot学习（一）</title>
     <url>/2022/02/02/SpringBoot%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89/</url>
     <content><![CDATA[<blockquote>
@@ -50,52 +160,6 @@
       <tags>
         <tag>Spring</tag>
         <tag>Java</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>数据结构（一）</title>
-    <url>/2022/01/31/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%88%E4%B8%80%EF%BC%89/</url>
-    <content><![CDATA[<h2 id="第1章-绪论"><a href="#第1章-绪论" class="headerlink" title="第1章 绪论"></a>第1章 绪论</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><ul>
-<li>数据元素</li>
-</ul>
-<p>数据元素是数据的<strong>基本</strong>单位。一个数据元素可由若干<code>数据项</code>组成；</p>
-<p><strong>数据项</strong>（还可以是组合项）是构成数据元素的不可分割的<strong>最小单位</strong>；</p>
-<ul>
-<li>数据对象</li>
-</ul>
-<p>数据对象是具有<strong>相同性质</strong>的数据元素的<strong>集合</strong>，是数据的一个子集</p>
-<ul>
-<li>数据结构</li>
-</ul>
-<p>数据结构是相互直接存在一种或多种特定<strong>关系</strong>的数据元素的<strong>集合</strong></p>
-<blockquote>
-<h3 id="数据结构三要素"><a href="#数据结构三要素" class="headerlink" title="数据结构三要素"></a>数据结构三要素</h3></blockquote>
-<img src="https://s4.ax1x.com/2022/02/26/bVu5ut.png" style="zoom: 67%;" />
-
-<h4 id="逻辑结构"><a href="#逻辑结构" class="headerlink" title="逻辑结构"></a>逻辑结构</h4><ul>
-<li>集合：各种元素同属一个集合，无其他关系</li>
-<li>线性：一对一的关系；除了第一个元素都有唯一前驱；除了最后一个元素都有唯一后继</li>
-<li>树形：一对多的关系</li>
-<li>图状：多对多的关系</li>
-</ul>
-<h4 id="数据运算"><a href="#数据运算" class="headerlink" title="数据运算"></a>数据运算</h4><p>结合逻辑结构、实际需求来定义基本运算</p>
-<h4 id="物理结构（存储结构）"><a href="#物理结构（存储结构）" class="headerlink" title="物理结构（存储结构）"></a>物理结构（存储结构）</h4><ul>
-<li><p>顺序存储：逻辑上相邻的数据元素在物理位置上也相邻（线性表）</p>
-</li>
-<li><p>链式存储：逻辑上可以不相邻，借助指示元素存储地址的<strong>指针</strong>来表示元素之间的逻辑关系。</p>
-</li>
-<li><p>索引存储：建立<strong>索引表</strong>，每一个索引项存储元素信息（关键字，地址）</p>
-</li>
-<li><p>散列存储：或<strong>哈希（Hash）</strong>存储，通过关键字计算出元素的存储地址</p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>考研</category>
-      </categories>
-      <tags>
-        <tag>考研</tag>
-        <tag>数据结构</tag>
       </tags>
   </entry>
   <entry>
@@ -171,6 +235,193 @@
       </tags>
   </entry>
   <entry>
+    <title></title>
+    <url>/2023/01/07/Node2020%E7%AC%94%E8%AE%B0%EF%BC%884%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="Node学习笔记（四）"><a href="#Node学习笔记（四）" class="headerlink" title="Node学习笔记（四）"></a>Node学习笔记（四）</h1><h2 id="url模块"><a href="#url模块" class="headerlink" title="url模块"></a>url模块</h2><h3 id="1-url-parse"><a href="#1-url-parse" class="headerlink" title="1.url.parse()"></a>1.url.parse()</h3><p>url.parse() 方法可以解析一个url地址，通过传入第二个参数（true）把包含有查询字符串的query转换成对象</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let url=require(&#x27;url&#x27;);</span><br><span class="line">let obj=url.parse(&#x27;http://www.baidu.com?name=cc&amp;age=24&#x27;)</span><br></pre></td></tr></table></figure>
+<h3 id="2-url-resolve"><a href="#2-url-resolve" class="headerlink" title="2.url.resolve()"></a>2.url.resolve()</h3><p>url.resolve()方法解析相对于基URL的目标URL。第一个参数：基URL，第二个参数：目标URL  (合成)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let url=require(&#x27;url&#x27;);</span><br><span class="line">let obj=url.resolve(&#x27;http://www.baidu.com/home&#x27;,&#x27;/about&#x27;)</span><br></pre></td></tr></table></figure>
+<h3 id="url模块的应用–爬取数据"><a href="#url模块的应用–爬取数据" class="headerlink" title="url模块的应用–爬取数据"></a>url模块的应用–爬取数据</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//let axios = require(&#x27;axios&#x27;);</span><br><span class="line">let request = require(&#x27;request&#x27;)</span><br><span class="line">let fs = require(&#x27;fs&#x27;)</span><br><span class="line">let &#123;fsWrite,fsRead,fsDir&#125; = require(&#x27;./fs&#x27;)</span><br><span class="line">//console.log(axios)</span><br><span class="line">let httpUrl = &quot;https://www.1905.com/vod/list/n_1_t_1/o3p1.html&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//获取分类里的电影链接</span><br><span class="line">//根据电影链接获取电影的详细信息</span><br><span class="line"></span><br><span class="line">function req(url)&#123;</span><br><span class="line">    return new Promise(function(resolve,reject)&#123;</span><br><span class="line">        request.get(url,function(err,response, body)&#123;</span><br><span class="line">            if(err)&#123;</span><br><span class="line">                reject(err)</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                resolve(&#123;response,body&#125;)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//获取起始页面的所有分类地址</span><br><span class="line">async function getClassUrl()&#123;</span><br><span class="line">    let &#123;response,body&#125; = await req(httpUrl)</span><br><span class="line">    //console.log(body)</span><br><span class="line">    let reg = /&lt;span class=&quot;search-index-L&quot;&gt;类型(.*?)&lt;div class=&quot;grid-12x&quot;&gt;/igs</span><br><span class="line">    //解析html内容</span><br><span class="line">    let result = reg.exec(body)[1]</span><br><span class="line">    </span><br><span class="line">   //&lt;a href=&quot;&quot; &gt;微电影&lt;/a&gt;</span><br><span class="line">   </span><br><span class="line">    let reg1 = /&lt;a href=&quot;javascript\:void\(0\);&quot; onclick=&quot;location\.href=&#x27;(.*?)&#x27;;return false;&quot; &gt;(.*?)&lt;\/a&gt;/igs</span><br><span class="line">    let arrClass = []</span><br><span class="line">    var res;</span><br><span class="line">    while( res = reg1.exec(result) )&#123;</span><br><span class="line">        if(res[2]!=&quot;全部&quot;)&#123;</span><br><span class="line">            let obj = &#123;</span><br><span class="line">                className:res[2],</span><br><span class="line">                url:res[1]</span><br><span class="line">            &#125;</span><br><span class="line">            arrClass.push(obj)</span><br><span class="line">            </span><br><span class="line">            await fsDir(&#x27;./movies/&#x27;+res[2])</span><br><span class="line">            getMovies(res[1],res[2])</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    console.log(arrClass)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//通过分类，获取页面中的电影链接</span><br><span class="line">async function getMovies(url,moviesType)&#123;</span><br><span class="line">    let &#123;response,body&#125; = await req(url)</span><br><span class="line">    let reg = /&lt;a class=&quot;pic-pack-outer&quot; target=&quot;_blank&quot; href=&quot;(.*?)&quot;.*?&gt;&lt;img/igs;</span><br><span class="line">    var res;</span><br><span class="line">    var arrList = []</span><br><span class="line"></span><br><span class="line">    while(res = reg.exec(body))&#123;</span><br><span class="line">        //改进，可以改为迭代器，提升性能</span><br><span class="line">        </span><br><span class="line">        arrList.push(res[1])</span><br><span class="line">        parsePage(res[1],moviesType)</span><br><span class="line">    &#125;</span><br><span class="line">    //console.log(&quot;分类：&quot;,moviesType)</span><br><span class="line">    console.log(arrList)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">async function parsePage(url,moviesType)&#123;</span><br><span class="line">    let &#123;response,body&#125; = await req(url)</span><br><span class="line"></span><br><span class="line">    let reg = /&lt;h1 class=&quot;playerBox-info-name playerBox-info-cnName&quot;&gt;(.*?)&lt;\/h1&gt;.*?id=&quot;playerBoxIntroCon&quot;&gt;(.*?)&lt;a.*?导演.*?target=&quot;\_blank&quot; title=&quot;(.*?)&quot; data-hrefexp/igs;</span><br><span class="line">    let res = reg.exec(body)</span><br><span class="line">    console.log(res[1])</span><br><span class="line">    let movie = &#123;</span><br><span class="line">        name:res[1],</span><br><span class="line">        brief:res[2],</span><br><span class="line">        daoyan:res[3],</span><br><span class="line">        movieUrl:url,</span><br><span class="line">        moviesType</span><br><span class="line">    &#125;</span><br><span class="line">    let strMovie = JSON.stringify(movie)</span><br><span class="line">    fsWrite(&#x27;./movies/&#x27;+moviesType+&quot;/&quot;+res[1]+&quot;.json&quot;,strMovie)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">getClassUrl()</span><br></pre></td></tr></table></figure>
+<h4 id="爬取数据-cheerio"><a href="#爬取数据-cheerio" class="headerlink" title="爬取数据 cheerio"></a>爬取数据 cheerio</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cheerio是nodejs的抓取页面模块，为服务器特别定制的，快速、灵活、实施的jQuery核心实现</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var cheerio = require(&#x27;cheerio&#x27;),</span><br><span class="line">    $ = cheerio.load(&#x27;&lt;h2 class = &quot;title&quot;&gt;Hello world&lt;/h2&gt;&#x27;);</span><br><span class="line"></span><br><span class="line">$(&#x27;h2.title&#x27;).text(&#x27;Hello there!&#x27;);</span><br><span class="line">$(&#x27;h2&#x27;).addClass(&#x27;welcome&#x27;);</span><br><span class="line"></span><br><span class="line">$.html();</span><br><span class="line">//=&gt; &lt;h2 class = &quot;title welcome&quot;&gt;Hello there!&lt;/h2&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="实例-爬取表情包"><a href="#实例-爬取表情包" class="headerlink" title="实例 -爬取表情包"></a>实例 -爬取表情包</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">const cheerio = require(&quot;cheerio&quot;);</span><br><span class="line">const axios = require(&#x27;axios&#x27;)</span><br><span class="line">const fs = require(&#x27;fs&#x27;)</span><br><span class="line">const url = require(&#x27;url&#x27;)</span><br><span class="line">const path = require(&#x27;path&#x27;)</span><br><span class="line">//获取HTML文档的内容，内容的获取跟jquery一样</span><br><span class="line"></span><br><span class="line">let httpUrl = &quot;https://www.doutula.com/article/list/?page=1&quot;</span><br><span class="line">//等待函数</span><br><span class="line">async function wait(milliseconds)&#123;</span><br><span class="line">    return new Promise(function(resolve,reject)&#123;</span><br><span class="line">        setTimeout(function()&#123;</span><br><span class="line">            resolve()</span><br><span class="line">        &#125;,milliseconds)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//获取页面总数</span><br><span class="line">async function getNum()&#123;</span><br><span class="line">    res = await axios.get(httpUrl)</span><br><span class="line">    let $ = cheerio.load(res.data)</span><br><span class="line">    let btnLength = $(&#x27;.pagination li&#x27;).length;</span><br><span class="line">    let allNum = $(&#x27;.pagination li&#x27;).eq(btnLength-2).find(&#x27;a&#x27;).text()</span><br><span class="line">    //console.log(allNum)</span><br><span class="line">    return allNum</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">async function spider()&#123;</span><br><span class="line">    //获取所有的页面总数</span><br><span class="line">    let allPageNum = await getNum()</span><br><span class="line">    for(let i=1;i&lt;=allPageNum;i++)&#123;</span><br><span class="line">        await wait(2000)</span><br><span class="line">        getListPage(i)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">async function getListPage(pageNum)&#123;</span><br><span class="line">    let httpUrl = &quot;https://www.doutula.com/article/list/?page=&quot;+pageNum;</span><br><span class="line">    let res = await axios.get(httpUrl)</span><br><span class="line">    //console.log(res.data)</span><br><span class="line">    //cheerio解析html文档</span><br><span class="line">    let $ = cheerio.load(res.data)</span><br><span class="line">    //获取当前页面的所有的表情页面的链接</span><br><span class="line">    $(&#x27;#home .col-sm-9&gt;a&#x27;).each(async (i,element)=&gt;&#123;</span><br><span class="line">       let  pageUrl = $(element).attr(&#x27;href&#x27;);</span><br><span class="line">       let title = $(element).find(&#x27;.random_title&#x27;).text()</span><br><span class="line">       let reg = /(.*?)\d/igs;</span><br><span class="line">       title = reg.exec(title)[1];</span><br><span class="line">       fs.mkdir(&#x27;./img/&#x27;+title,function(err)&#123;</span><br><span class="line">            if(err)&#123;</span><br><span class="line">                //console.log(err)</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                console.log(&quot;成功创建目录：&quot;+&#x27;./img/&#x27;+title)</span><br><span class="line">            &#125;</span><br><span class="line">       &#125;);</span><br><span class="line">       //console.log(title)</span><br><span class="line">       await wait(100);</span><br><span class="line">       parsePage(pageUrl,title)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">async function parsePage(pageUrl,title)&#123;</span><br><span class="line">    let res = await axios.get(pageUrl);</span><br><span class="line">    let $ = cheerio.load(res.data)</span><br><span class="line">    $(&#x27;.pic-content img&#x27;).each(async (i,element)=&gt;&#123;</span><br><span class="line">        let imgUrl = $(element).attr(&#x27;src&#x27;)</span><br><span class="line">       </span><br><span class="line">        //console.log(path.parse(imgUrl))</span><br><span class="line">        extName = path.extname(imgUrl)</span><br><span class="line">        //图片写入的路径和名字</span><br><span class="line">        await wait(50);</span><br><span class="line">        let imgPath = `./img/$&#123;title&#125;/$&#123;title&#125;-$&#123;i&#125;$&#123;extName&#125;`</span><br><span class="line">        //创建写入图片流</span><br><span class="line">        let ws = fs.createWriteStream(imgPath)</span><br><span class="line">        axios.get(imgUrl,&#123;responseType:&#x27;stream&#x27;&#125;).then(function(res)&#123;</span><br><span class="line">            res.data.pipe(ws)</span><br><span class="line">            console.log(&quot;图片加载完成：&quot;+imgPath)</span><br><span class="line">            //关闭写入流</span><br><span class="line">            res.data.on(&#x27;close&#x27;,function()&#123;</span><br><span class="line">                ws.close()</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;)</span><br><span class="line">        </span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">spider()</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2023/01/07/Typescript%EF%BC%88%E4%B8%80%EF%BC%89/</url>
+    <content><![CDATA[<h4 id="typescript中为了使编写的代码更规范，更有利于维护，增加了类型检验-写ts代码必须指定类型"><a href="#typescript中为了使编写的代码更规范，更有利于维护，增加了类型检验-写ts代码必须指定类型" class="headerlink" title="typescript中为了使编写的代码更规范，更有利于维护，增加了类型检验,写ts代码必须指定类型"></a>typescript中为了使编写的代码更规范，更有利于维护，增加了类型检验,写ts代码必须指定类型</h4><h3 id="typescript数据类型"><a href="#typescript数据类型" class="headerlink" title="typescript数据类型"></a>typescript数据类型</h3><ul>
+<li> 布尔类型（boolean）</li>
+<li>   数字类型（number）</li>
+<li>   字符串类型（string）</li>
+<li>   数组类型（Array）</li>
+<li>   元组类型（tuple）</li>
+<li>   枚举类型（enum）</li>
+<li>   任意类型（any）</li>
+<li>   null和undefined</li>
+<li>   void类型</li>
+<li>   never类型</li>
+<li><h4 id="布尔类型"><a href="#布尔类型" class="headerlink" title="布尔类型"></a>布尔类型</h4></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var flag: boolean = true;</span><br><span class="line">// flag=123   错误写法</span><br><span class="line">flag = false</span><br><span class="line"></span><br><span class="line">console.log(flag)</span><br></pre></td></tr></table></figure>
+
+<p>//数字类型</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var num: number = 123;</span><br><span class="line">console.log(num);</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var str: string = &#x27;this is ts&#x27;;</span><br><span class="line"></span><br><span class="line">str = &quot;lalala&quot;;</span><br><span class="line">console.log(str);</span><br></pre></td></tr></table></figure>
+
+<h4 id="数组类型"><a href="#数组类型" class="headerlink" title="数组类型"></a>数组类型</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//数组 ts中定义数组有两种方式</span><br><span class="line"></span><br><span class="line">//1.第一种</span><br><span class="line">// var arr=[&#x27;1&#x27;,&#x27;2&#x27;];  //es5定义数组</span><br><span class="line">var arr: number[] = [11, 22, 443];</span><br><span class="line">console.log(arr);</span><br><span class="line"></span><br><span class="line">//第二种</span><br><span class="line">var arr1: Array&lt;number&gt; = [11, 33, 523]</span><br><span class="line">console.log(arr1);</span><br><span class="line"></span><br><span class="line">//第三种</span><br><span class="line">var arr4:any[]=[&#x27;123213&#x27;,22,true];</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="元组类型（tuple）-属于数组的一种"><a href="#元组类型（tuple）-属于数组的一种" class="headerlink" title="元组类型（tuple） 属于数组的一种"></a>元组类型（tuple） 属于数组的一种</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let arr3: [number, string] = [123, &#x27;4232&#x27;];</span><br><span class="line"></span><br><span class="line">console.log(arr3);</span><br></pre></td></tr></table></figure>
+
+
+<p>//枚举类型</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">enum Flag &#123;</span><br><span class="line">    success,</span><br><span class="line">    error</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let f: Flag = Flag.error</span><br><span class="line">console.log(f);</span><br><span class="line"></span><br><span class="line">enum Color &#123;</span><br><span class="line">    blue, red = 3, &#x27;orange&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var c: Color = Color.blue;</span><br><span class="line">console.log(c);  //0  如果标识符没有赋值  它的值就是下标</span><br><span class="line"></span><br><span class="line">enum Err &#123;</span><br><span class="line">    &#x27;undefined&#x27; = -1, &#x27;null&#x27; = -2,</span><br><span class="line">    &#x27;success&#x27; = 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var e: Err = Err.success</span><br><span class="line">console.log(e)</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="任意类型"><a href="#任意类型" class="headerlink" title="任意类型"></a>任意类型</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var num1: any = 123;</span><br><span class="line">num1 = &#x27;str&#x27;;</span><br><span class="line">num1 = true;</span><br><span class="line">console.log(num1)</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="任意类型的用途"><a href="#任意类型的用途" class="headerlink" title="任意类型的用途"></a>任意类型的用途</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var oBox: any = document.getElementById(&#x27;box&#x27;);</span><br><span class="line">oBox.style.color = &#x27;red&#x27;;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="null-和undefined-其他（never类型）数据类型的子类型"><a href="#null-和undefined-其他（never类型）数据类型的子类型" class="headerlink" title="null 和undefined  其他（never类型）数据类型的子类型"></a>null 和undefined  其他（never类型）数据类型的子类型</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var num3: undefined;// console.log(num3);  //正确</span><br><span class="line"></span><br><span class="line"> var num3:number |undefined;  //定义没有赋值就是undefined</span><br><span class="line"> num3=123</span><br><span class="line"> console.log(num3)</span><br><span class="line"></span><br><span class="line"> var num2:null;</span><br><span class="line"> num2=null;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="一个元素可能是number类型-可能是null-可能是undefined"><a href="#一个元素可能是number类型-可能是null-可能是undefined" class="headerlink" title="一个元素可能是number类型 可能是null 可能是undefined"></a>一个元素可能是number类型 可能是null 可能是undefined</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var num2: number | null | undefined;</span><br><span class="line"> num2 = 1234;</span><br><span class="line">console.log(num)</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="void-类型：typescript中的void表示没有任何类型，一般用于定义方法的时候没有返回值。"><a href="#void-类型：typescript中的void表示没有任何类型，一般用于定义方法的时候没有返回值。" class="headerlink" title="void 类型：typescript中的void表示没有任何类型，一般用于定义方法的时候没有返回值。"></a>void 类型：typescript中的void表示没有任何类型，一般用于定义方法的时候没有返回值。</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// es5的写法</span><br><span class="line"> function run() &#123;</span><br><span class="line">     console.log(&quot;run&quot;)</span><br><span class="line"> &#125;</span><br><span class="line"> run();</span><br><span class="line"></span><br><span class="line">//表示方法没有返回任何类型</span><br><span class="line"> function run():void &#123;</span><br><span class="line">     console.log(&quot;run&quot;)</span><br><span class="line"> &#125;</span><br><span class="line"> run();</span><br><span class="line"></span><br><span class="line">//正确写法</span><br><span class="line">function run(): number &#123;</span><br><span class="line">    console.log(&quot;run&quot;)</span><br><span class="line">    return 123</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">run();</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="never类型："><a href="#never类型：" class="headerlink" title="never类型："></a>never类型：</h4><h5 id="是其他类型（包括null和undefined）的子类型，代表从不会出现的值，这意味着声明never只能被never类型所赋值"><a href="#是其他类型（包括null和undefined）的子类型，代表从不会出现的值，这意味着声明never只能被never类型所赋值" class="headerlink" title="是其他类型（包括null和undefined）的子类型，代表从不会出现的值，这意味着声明never只能被never类型所赋值"></a>是其他类型（包括null和undefined）的子类型，代表从不会出现的值，这意味着声明never只能被never类型所赋值</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var a: undefined;</span><br><span class="line">a = undefined  //正确</span><br><span class="line"></span><br><span class="line">var b: null;</span><br><span class="line">// b=undefined 报错</span><br><span class="line">b = null; //正确</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var abc:never;</span><br><span class="line">abc=(()=&gt;&#123;</span><br><span class="line">    throw  new Error(&#x27;错误&#x27;)</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2023/01/07/Typescript%EF%BC%88%E4%B8%89%EF%BC%89/</url>
+    <content><![CDATA[<h2 id="Typescript的类"><a href="#Typescript的类" class="headerlink" title="Typescript的类"></a>Typescript的类</h2><h3 id="复习ES5中的类"><a href="#复习ES5中的类" class="headerlink" title="复习ES5中的类"></a>复习ES5中的类</h3><h4 id="1-最简单的类"><a href="#1-最简单的类" class="headerlink" title="1.最简单的类"></a>1.最简单的类</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">function Person() &#123;</span><br><span class="line">    this.name = &#x27;张三&#x27;;</span><br><span class="line">    this.age = 20;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var p = new Person();</span><br><span class="line">console.log(p.name);</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="2-构造函数和原型链里面增加方法"><a href="#2-构造函数和原型链里面增加方法" class="headerlink" title="2.构造函数和原型链里面增加方法"></a>2.构造函数和原型链里面增加方法</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">function Person() &#123;</span><br><span class="line">    this.name = &#x27;张三&#x27;;  /*属性*/</span><br><span class="line">    this.age = 20;</span><br><span class="line">    this.run = function () &#123;    /*实例方法*/</span><br><span class="line">        alert(this.name + &quot;在运动&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">原型链上上面的属性会被多个实例共享  构造函数不会</span><br><span class="line">    Person.prototype.sex=&quot;男&quot;;</span><br><span class="line">    Person.prototype.work=function () &#123;</span><br><span class="line">        alert(this.name+&quot;在工作&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">var p = new Person();</span><br><span class="line">console.log(p.name);</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="3-类里面的静态方法"><a href="#3-类里面的静态方法" class="headerlink" title="3.类里面的静态方法"></a>3.类里面的静态方法</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">function Person() &#123;</span><br><span class="line">    this.name = &#x27;张三&#x27;;  /*属性*/</span><br><span class="line">    this.age = 20;</span><br><span class="line">    this.run = function () &#123;    /*实例方法*/</span><br><span class="line">        alert(this.name + &quot;在运动&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Person.getInfo=function () &#123;</span><br><span class="line">    alert(&#x27;我是静态方法&#x27;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//调用静态方法</span><br><span class="line">Person.getInfo();</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-es5里面的继承-对象冒充实现继承"><a href="#4-es5里面的继承-对象冒充实现继承" class="headerlink" title="4.es5里面的继承 对象冒充实现继承"></a>4.es5里面的继承 对象冒充实现继承</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">function Person() &#123;</span><br><span class="line">    this.name = &#x27;张三&#x27;;  /*属性*/</span><br><span class="line">    this.age = 20;</span><br><span class="line">    this.run = function () &#123;    /*实例方法*/</span><br><span class="line">        alert(this.name + &quot;在运动&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Person.prototype.sex = &quot;男&quot;;</span><br><span class="line">Person.prototype.work = function () &#123;</span><br><span class="line">    alert(this.name + &quot;在工作&quot;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//web类 继承Person类 原型链+对象冒充的组合继承模式</span><br><span class="line"></span><br><span class="line">function Web() &#123;</span><br><span class="line">    Person.call(this);  /*对象冒充实现继承*/</span><br><span class="line">&#125;</span><br><span class="line">var w=new Web();</span><br><span class="line">w.run();  //对象冒充可以继承构造函数里面的属性和方法</span><br><span class="line">w.work()  //无法继承原型链上面的属性和方法</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="5-原型链实现继承"><a href="#5-原型链实现继承" class="headerlink" title="5.原型链实现继承"></a>5.原型链实现继承</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">function Person() &#123;</span><br><span class="line">    this.name = &#x27;张三&#x27;;  /*属性*/</span><br><span class="line">    this.age = 20;</span><br><span class="line">    this.run = function () &#123;    /*实例方法*/</span><br><span class="line">        alert(this.name + &quot;在运动&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Person.prototype.sex = &quot;男&quot;;</span><br><span class="line">Person.prototype.work = function () &#123;</span><br><span class="line">    alert(this.name + &quot;在工作&quot;)</span><br><span class="line">&#125;</span><br><span class="line">//web类 继承Person类</span><br><span class="line">function Web() &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">Web.prototype=new Person(); //原型链实现继承</span><br><span class="line">var w=new Web();</span><br><span class="line">//可以继承构造函数里面的属性和方法，也可以继承原型链上面的属性和方法</span><br><span class="line">w.work();</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="6-原型链继承的问题"><a href="#6-原型链继承的问题" class="headerlink" title="6.原型链继承的问题"></a>6.原型链继承的问题</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">function Person(name,age) &#123;</span><br><span class="line">    this.name = name;  /*属性*/</span><br><span class="line">    this.age =age;</span><br><span class="line">    this.run = function () &#123;    /*实例方法*/</span><br><span class="line">        alert(this.name + &quot;在运动&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Person.prototype.sex = &quot;男&quot;;</span><br><span class="line">Person.prototype.work = function () &#123;</span><br><span class="line">    alert(this.name + &quot;在工作&quot;)</span><br><span class="line">&#125;</span><br><span class="line">var p=new Person(&#x27;李四&#x27;,20);</span><br><span class="line">p.run();</span><br><span class="line"></span><br><span class="line">function Web(name,age) &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">Web.prototype=new Person();</span><br><span class="line"></span><br><span class="line">var w=new Web(&#x27;赵四&#x27;,20);  //实例化子类的时候无法给父类传参</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="7-原型链-构造函数组合继承模式"><a href="#7-原型链-构造函数组合继承模式" class="headerlink" title="7.原型链+构造函数组合继承模式"></a>7.原型链+构造函数组合继承模式</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">function Person(name,age) &#123;</span><br><span class="line">    this.name = name;  /*属性*/</span><br><span class="line">    this.age =age;</span><br><span class="line">    this.run = function () &#123;    /*实例方法*/</span><br><span class="line">        alert(this.name + &quot;在运动&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Person.prototype.sex = &quot;男&quot;;</span><br><span class="line">Person.prototype.work = function () &#123;</span><br><span class="line">    alert(this.name + &quot;在工作&quot;)</span><br><span class="line">&#125;</span><br><span class="line">var p=new Person(&#x27;李四&#x27;,20);</span><br><span class="line">p.run();</span><br><span class="line"></span><br><span class="line">function Web(name,age) &#123;</span><br><span class="line">    Person.call(this,age,name);  /*对象冒充继承  实例化子类可以给父类传参*/</span><br><span class="line">&#125;</span><br><span class="line">Web.prototype=new Person();</span><br><span class="line"></span><br><span class="line">var w=new Web(&#x27;赵四&#x27;,20);</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="8-原型链-构造函数另一种方式"><a href="#8-原型链-构造函数另一种方式" class="headerlink" title="8.原型链+构造函数另一种方式"></a>8.原型链+构造函数另一种方式</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">function Person(name,age) &#123;</span><br><span class="line">    this.name = name;  /*属性*/</span><br><span class="line">    this.age =age;</span><br><span class="line">    this.run = function () &#123;    /*实例方法*/</span><br><span class="line">        alert(this.name + &quot;在运动&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Person.prototype.sex = &quot;男&quot;;</span><br><span class="line">Person.prototype.work = function () &#123;</span><br><span class="line">    alert(this.name + &quot;在工作&quot;)</span><br><span class="line">&#125;</span><br><span class="line">var p=new Person(&#x27;李四&#x27;,20);</span><br><span class="line">p.run();</span><br><span class="line"></span><br><span class="line">function Web(name,age) &#123;</span><br><span class="line">    Person.call(this,age,name);  /*对象冒充继承  实例化子类可以给父类传参*/</span><br><span class="line">&#125;</span><br><span class="line">Web.prototype=Person.prototype;</span><br><span class="line"></span><br><span class="line">var w=new Web(&#x27;赵四&#x27;,20);</span><br><span class="line">w.work();</span><br></pre></td></tr></table></figure>
+
+<h3 id="Typescript中的类"><a href="#Typescript中的类" class="headerlink" title="Typescript中的类"></a>Typescript中的类</h3><h4 id="1-ts中类的定义"><a href="#1-ts中类的定义" class="headerlink" title="1.ts中类的定义"></a>1.ts中类的定义</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class Person&#123;</span><br><span class="line">    name:string;  //属性 前面public</span><br><span class="line">    constructor(n:string)&#123;   //构造函数  实例化类时触发的方法</span><br><span class="line">        this.name=n;</span><br><span class="line">    &#125;</span><br><span class="line">    run():void&#123;</span><br><span class="line">        alert(this.name)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var p=new Person(&quot;张三&quot;);</span><br><span class="line"></span><br><span class="line">p.run();</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class Person&#123;</span><br><span class="line">    name:string;  //属性 前面public</span><br><span class="line">    constructor(n:string)&#123;   //构造函数  实例化类时触发的方法</span><br><span class="line">        this.name=n;</span><br><span class="line">    &#125;</span><br><span class="line">    run():void&#123;</span><br><span class="line">        alert(this.name)</span><br><span class="line">    &#125;</span><br><span class="line">    getName():string&#123;</span><br><span class="line">        return this.name;</span><br><span class="line">    &#125;</span><br><span class="line">    setName(name:string):void&#123;</span><br><span class="line">        this.name=name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var p=new Person(&quot;张三&quot;);</span><br><span class="line"></span><br><span class="line">alert(p.getName());</span><br><span class="line"></span><br><span class="line">p.setName(&quot;李四&quot;);</span><br></pre></td></tr></table></figure>
+<h4 id="2-ts中实现继承-extends、super"><a href="#2-ts中实现继承-extends、super" class="headerlink" title="2.ts中实现继承  extends、super"></a>2.ts中实现继承  extends、super</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class Person&#123;</span><br><span class="line">    name:string;  </span><br><span class="line">    constructor(name:string)&#123;   </span><br><span class="line">        this.name=name;</span><br><span class="line">    &#125;</span><br><span class="line">    run():string&#123;</span><br><span class="line">        return `$&#123;this.name&#125;在运动`</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// var p=new Person(&quot;王五&quot;);</span><br><span class="line">// alert(p.run())</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"></span><br><span class="line">class Web extends Person&#123;</span><br><span class="line">    constructor(name:string)&#123;</span><br><span class="line">        super(name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">var w=new Web(&#x27;李四&#x27;);</span><br><span class="line">alert(w.run())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h5 id="ts中继承的探讨-父类的方法和子类的方法一致"><a href="#ts中继承的探讨-父类的方法和子类的方法一致" class="headerlink" title="ts中继承的探讨  父类的方法和子类的方法一致"></a>ts中继承的探讨  父类的方法和子类的方法一致</h5><h4 id="3-类里面的修饰符"><a href="#3-类里面的修饰符" class="headerlink" title="3.类里面的修饰符"></a>3.类里面的修饰符</h4><h5 id="typescript里面定义属性的时候提供三种修饰符"><a href="#typescript里面定义属性的时候提供三种修饰符" class="headerlink" title="typescript里面定义属性的时候提供三种修饰符"></a>typescript里面定义属性的时候提供三种修饰符</h5><ul>
+<li>public</li>
+<li>protected</li>
+<li>private</li>
+</ul>
+<h4 id="4-静态属性、静态方法"><a href="#4-静态属性、静态方法" class="headerlink" title="4. 静态属性、静态方法"></a>4. 静态属性、静态方法</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">function Person()&#123;</span><br><span class="line">    this.run1=function()&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Person.name=&#x27;哈哈哈哈&#x27;;</span><br><span class="line">Person.run2=function()&#123;  //静态方法</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var p=new Person();</span><br><span class="line"></span><br><span class="line">Person.run2()  //静态方法的调用</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">jQuery中的使用</span><br><span class="line">function $(element)&#123;</span><br><span class="line">        return new Base(element)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$.get=function()&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function Base(element)&#123;</span><br><span class="line">    this.element=&quot;获取dom节点&quot;;</span><br><span class="line"></span><br><span class="line">    this.css=function(attr,value)&#123;</span><br><span class="line">        this.element.style.attr=value</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$(&#x27;box&#x27;).css(&#x27;color&#x27;,&#x27;red&#x27;)</span><br><span class="line"></span><br><span class="line">$.get(&#x27;url&#x27;,function()&#123;</span><br><span class="line"></span><br><span class="line">&#125;)</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class Person&#123;</span><br><span class="line">    public name:string;</span><br><span class="line">    public age:number=20;</span><br><span class="line">    static sex=&#x27;男&#x27;;</span><br><span class="line">    constructor(name:string)&#123;</span><br><span class="line">        this.name=name;</span><br><span class="line">    &#125;</span><br><span class="line">    run()&#123;   //实例方法</span><br><span class="line">        alert(`$&#123;this.name&#125;在运动`)</span><br><span class="line">    &#125;</span><br><span class="line">    work()&#123;</span><br><span class="line">        alert(`$&#123;this.name&#125;在工作`)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    static print()&#123;   //静态方法 无法直接调用类中的属性</span><br><span class="line">        alert(&#x27;print方法&#x27;+Person.sex)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// var p=new Person(&#x27;张三&#x27;);</span><br><span class="line"></span><br><span class="line">// p.run();</span><br><span class="line">Person.print();</span><br><span class="line"></span><br><span class="line">alert(Person.sex);</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="5-多态：父类定义一个方法不去实现，让继承它的子类去实现-每一个子类有不同的表现"><a href="#5-多态：父类定义一个方法不去实现，让继承它的子类去实现-每一个子类有不同的表现" class="headerlink" title="5.多态：父类定义一个方法不去实现，让继承它的子类去实现  每一个子类有不同的表现"></a>5.多态：父类定义一个方法不去实现，让继承它的子类去实现  每一个子类有不同的表现</h4><h5 id="多态属于继承"><a href="#多态属于继承" class="headerlink" title="多态属于继承"></a>多态属于继承</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class Animal &#123;</span><br><span class="line">    name: string;</span><br><span class="line">    constructor(name: string) &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    eat() &#123;</span><br><span class="line">        console.log(&#x27;吃的方法 &#x27;);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Dog extends Animal&#123;</span><br><span class="line">    constructor(name:string)&#123;</span><br><span class="line">        super(name)</span><br><span class="line">    &#125;</span><br><span class="line">    eat()&#123;</span><br><span class="line">        return `$&#123;this.name&#125;吃肉`</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Cat extends Animal&#123;</span><br><span class="line">    constructor(name:string)&#123;</span><br><span class="line">        super(name)</span><br><span class="line">    &#125;</span><br><span class="line">    eat()&#123;</span><br><span class="line">        return `$&#123;this.name&#125;吃鱼    `</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-抽象类-用abstract关键字定义抽象类和抽象方法，抽象类中的抽象方法不包含具体实现并且必须在派生类中实现"><a href="#6-抽象类-用abstract关键字定义抽象类和抽象方法，抽象类中的抽象方法不包含具体实现并且必须在派生类中实现" class="headerlink" title="6.抽象类  用abstract关键字定义抽象类和抽象方法，抽象类中的抽象方法不包含具体实现并且必须在派生类中实现"></a>6.抽象类  用abstract关键字定义抽象类和抽象方法，抽象类中的抽象方法不包含具体实现并且必须在派生类中实现</h4><h5 id="abstract抽象方法只能放在抽象类里面"><a href="#abstract抽象方法只能放在抽象类里面" class="headerlink" title="abstract抽象方法只能放在抽象类里面"></a>abstract抽象方法只能放在抽象类里面</h5><h5 id="抽象类和抽象方法用来定义标准"><a href="#抽象类和抽象方法用来定义标准" class="headerlink" title="抽象类和抽象方法用来定义标准"></a>抽象类和抽象方法用来定义标准</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">abstract class Animal &#123;</span><br><span class="line">    public name: string;</span><br><span class="line">    constructor(name: string) &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    abstract eat(): any;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Dog extends Animal &#123;</span><br><span class="line"></span><br><span class="line">    //抽象类的子类必须实现抽象类里面的抽象方法</span><br><span class="line">    constructor(name: any) &#123;</span><br><span class="line">        super(name)</span><br><span class="line">    &#125;</span><br><span class="line">    eat() &#123;</span><br><span class="line">        console.log(this.name + &#x27;吃粮食&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var d=new Dog(&#x27;小狗&#x27;);</span><br><span class="line"></span><br><span class="line">d.eat();</span><br></pre></td></tr></table></figure>
+
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2023/01/07/Typescript%EF%BC%88%E5%9B%9B%EF%BC%89/</url>
+    <content><![CDATA[<h3 id="Typescript接口"><a href="#Typescript接口" class="headerlink" title="Typescript接口"></a>Typescript接口</h3>]]></content>
+  </entry>
+  <entry>
+    <title>数据结构（一）</title>
+    <url>/2022/01/31/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%88%E4%B8%80%EF%BC%89/</url>
+    <content><![CDATA[<h2 id="第1章-绪论"><a href="#第1章-绪论" class="headerlink" title="第1章 绪论"></a>第1章 绪论</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><ul>
+<li>数据元素</li>
+</ul>
+<p>数据元素是数据的<strong>基本</strong>单位。一个数据元素可由若干<code>数据项</code>组成；</p>
+<p><strong>数据项</strong>（还可以是组合项）是构成数据元素的不可分割的<strong>最小单位</strong>；</p>
+<ul>
+<li>数据对象</li>
+</ul>
+<p>数据对象是具有<strong>相同性质</strong>的数据元素的<strong>集合</strong>，是数据的一个子集</p>
+<ul>
+<li>数据结构</li>
+</ul>
+<p>数据结构是相互直接存在一种或多种特定<strong>关系</strong>的数据元素的<strong>集合</strong></p>
+<blockquote>
+<h3 id="数据结构三要素"><a href="#数据结构三要素" class="headerlink" title="数据结构三要素"></a>数据结构三要素</h3></blockquote>
+<img src="https://s4.ax1x.com/2022/02/26/bVu5ut.png" style="zoom: 67%;" />
+
+<h4 id="逻辑结构"><a href="#逻辑结构" class="headerlink" title="逻辑结构"></a>逻辑结构</h4><ul>
+<li>集合：各种元素同属一个集合，无其他关系</li>
+<li>线性：一对一的关系；除了第一个元素都有唯一前驱；除了最后一个元素都有唯一后继</li>
+<li>树形：一对多的关系</li>
+<li>图状：多对多的关系</li>
+</ul>
+<h4 id="数据运算"><a href="#数据运算" class="headerlink" title="数据运算"></a>数据运算</h4><p>结合逻辑结构、实际需求来定义基本运算</p>
+<h4 id="物理结构（存储结构）"><a href="#物理结构（存储结构）" class="headerlink" title="物理结构（存储结构）"></a>物理结构（存储结构）</h4><ul>
+<li><p>顺序存储：逻辑上相邻的数据元素在物理位置上也相邻（线性表）</p>
+</li>
+<li><p>链式存储：逻辑上可以不相邻，借助指示元素存储地址的<strong>指针</strong>来表示元素之间的逻辑关系。</p>
+</li>
+<li><p>索引存储：建立<strong>索引表</strong>，每一个索引项存储元素信息（关键字，地址）</p>
+</li>
+<li><p>散列存储：或<strong>哈希（Hash）</strong>存储，通过关键字计算出元素的存储地址</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>考研</category>
+      </categories>
+      <tags>
+        <tag>考研</tag>
+        <tag>数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2023/01/07/Typescript%EF%BC%88%E4%BA%8C%EF%BC%89/</url>
+    <content><![CDATA[<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><h4 id="3-1-函数的定义"><a href="#3-1-函数的定义" class="headerlink" title="3.1 函数的定义"></a>3.1 函数的定义</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//es5定义函数的方法</span><br><span class="line"></span><br><span class="line">//函数声明法</span><br><span class="line">function run()&#123;</span><br><span class="line">    return &#x27;run&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//匿名函数</span><br><span class="line">var run2 = function () &#123;</span><br><span class="line">    return &#x27;run2&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//ts中定义函数的方法</span><br><span class="line"></span><br><span class="line">//函数声明法</span><br><span class="line">function fun1(): string &#123;</span><br><span class="line">    return &#x27;run&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//匿名函数</span><br><span class="line">var fun2 = function (): number &#123;</span><br><span class="line">    return 123;</span><br><span class="line">&#125;</span><br><span class="line">fun2();   //调用方法</span><br><span class="line"></span><br><span class="line">//ts中定义方法传参</span><br><span class="line">function getInfo(name: string, age: number): string &#123;</span><br><span class="line">    return `$&#123;name&#125; --- $&#123;age&#125;`</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">alert(getInfo(&#x27;zhangsan&#x27;,12));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var getInfo=function (name:string,age:number):string &#123;</span><br><span class="line">    return `$&#123;name&#125;--$&#123;age&#125;`;</span><br><span class="line">&#125;</span><br><span class="line">alert(getInfo(&#x27;zhangsan&#x27;,13));</span><br><span class="line"></span><br><span class="line">//没有返回值的方法</span><br><span class="line">function  fun3():void &#123;</span><br><span class="line">    console.log(&quot;run&quot;)</span><br><span class="line">&#125;</span><br><span class="line">fun3();</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="3-2-方法可选参数"><a href="#3-2-方法可选参数" class="headerlink" title="3.2 方法可选参数"></a>3.2 方法可选参数</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//es5里面方法的实参和形参可以不一样，但是ts中必须一样，如果不一样就需要配置可选参数</span><br><span class="line"></span><br><span class="line">function getInfo(name:string,age?:number):string &#123;</span><br><span class="line">    if(age)&#123;</span><br><span class="line"></span><br><span class="line">    return `$&#123;name&#125; --- $&#123;age&#125;`</span><br><span class="line">&#125;else &#123;</span><br><span class="line">        return `$&#123;name&#125; ---年龄保密`</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">alert(getInfo(&#x27;zhangsan&#x27;,13));</span><br><span class="line">alert(getInfo(&#x27;zhangsan&#x27;));</span><br><span class="line"></span><br><span class="line">// 注意：可选参数必须配置到参数的最后面</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3默认参数"><a href="#3-3默认参数" class="headerlink" title="3.3默认参数"></a>3.3默认参数</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// es5里面没法设置默认参数，es6和ts都可以设置默认参数</span><br><span class="line"></span><br><span class="line">function getInfo(name:string,age:number=20):string &#123;</span><br><span class="line">    if(age)&#123;</span><br><span class="line"></span><br><span class="line">        return `$&#123;name&#125; --- $&#123;age&#125;`</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        return `$&#123;name&#125; ---年龄保密`</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">    alert(getInfo(&quot;张三&quot;,30));</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="3-4-剩余参数"><a href="#3-4-剩余参数" class="headerlink" title="3.4 剩余参数"></a>3.4 剩余参数</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 三点运算符 接受形参传过来的值</span><br><span class="line">function  sum(...result:number[]) :number&#123;</span><br><span class="line">   var sum=0;</span><br><span class="line">   for (var i=0;i&lt;result.length;i++)&#123;</span><br><span class="line">       sum+=result[i];</span><br><span class="line">   &#125;</span><br><span class="line">    return sum</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(sum(1, 2, 3, 4,54));</span><br><span class="line"></span><br><span class="line">function  sum(a:number,...result:number[]) :number&#123;</span><br><span class="line">   var sum=a;</span><br><span class="line">   for (var i=0;i&lt;result.length;i++)&#123;</span><br><span class="line">       sum+=result[i];</span><br><span class="line">   &#125;</span><br><span class="line">    return sum</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-5-函数重载"><a href="#3-5-函数重载" class="headerlink" title="3.5 函数重载"></a>3.5 函数重载</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//typescript中的重载，通过为同一个函数提供多个函数类型定义来实现多种功能的目的</span><br><span class="line">    //ts为了兼容es5以及es6重载的写法和java中有区别</span><br><span class="line">function getInfo(name:string):string;</span><br><span class="line"></span><br><span class="line">function getInfo(age:number):number;</span><br><span class="line"></span><br><span class="line">function getInfo(str:any):any&#123;</span><br><span class="line">    if(typeof str===&#x27;string&#x27;)&#123;</span><br><span class="line">        return &quot;我叫&quot;+str</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        return  &quot;我的年龄是&quot;+str;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">alert(getInfo(&#x27;张三&#x27;));</span><br><span class="line"></span><br><span class="line">alert(getInfo(20));</span><br><span class="line"></span><br><span class="line">function getInfo(name:string):string;</span><br><span class="line"></span><br><span class="line">function getInfo(name:string,age:number):string;</span><br><span class="line"></span><br><span class="line">function getInfo(name:any,age?:any):any &#123;</span><br><span class="line">    if(age)&#123;</span><br><span class="line">        return &quot;我叫&quot;+name+&quot;,我的年龄是&quot;+age;</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        return `我叫$&#123;name&#125;`</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">alert(getInfo(&#x27;张三&#x27;,20));</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="3-6-箭头函数"><a href="#3-6-箭头函数" class="headerlink" title="3.6 箭头函数"></a>3.6 箭头函数</h4><h5 id="this指向问题-箭头函数里this指向上下文"><a href="#this指向问题-箭头函数里this指向上下文" class="headerlink" title="this指向问题  箭头函数里this指向上下文"></a>this指向问题  箭头函数里this指向上下文</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">setTimeout(()=&gt;&#123;</span><br><span class="line">    console.log(123)</span><br><span class="line">&#125;,1000)</span><br></pre></td></tr></table></figure>
+
+]]></content>
+  </entry>
+  <entry>
     <title>数据结构（二）</title>
     <url>/2022/02/06/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%88%E4%BA%8C%EF%BC%89/</url>
     <content><![CDATA[<h2 id="第2章-线性表"><a href="#第2章-线性表" class="headerlink" title="第2章 线性表"></a>第2章 线性表</h2>]]></content>
@@ -186,15 +437,22 @@
     <title>软件工程导论（一）</title>
     <url>/2022/04/14/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%E5%AF%BC%E8%AE%BA%EF%BC%88%E4%B8%80%EF%BC%89/</url>
     <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>标签</title>
-    <url>/tags/index.html</url>
-    <content><![CDATA[]]></content>
+      <categories>
+        <category>考研</category>
+      </categories>
+      <tags>
+        <tag>考研</tag>
+        <tag>软件工程</tag>
+      </tags>
   </entry>
   <entry>
     <title>分类</title>
     <url>/categories/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>标签</title>
+    <url>/tags/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
