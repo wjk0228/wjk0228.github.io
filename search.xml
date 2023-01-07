@@ -387,18 +387,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Typescript初学习（四）</title>
-    <url>/2023/01/07/Typescript%EF%BC%88%E5%9B%9B%EF%BC%89/</url>
-    <content><![CDATA[<h3 id="Typescript接口"><a href="#Typescript接口" class="headerlink" title="Typescript接口"></a>Typescript接口</h3>]]></content>
-      <categories>
-        <category>Typescript</category>
-      </categories>
-      <tags>
-        <tag>前端</tag>
-        <tag>Typescript</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Typescript初学习（二）</title>
     <url>/2023/01/07/Typescript%EF%BC%88%E4%BA%8C%EF%BC%89/</url>
     <content><![CDATA[<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><h4 id="3-1-函数的定义"><a href="#3-1-函数的定义" class="headerlink" title="3.1 函数的定义"></a>3.1 函数的定义</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//es5定义函数的方法</span><br><span class="line"></span><br><span class="line">//函数声明法</span><br><span class="line">function run()&#123;</span><br><span class="line">    return &#x27;run&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//匿名函数</span><br><span class="line">var run2 = function () &#123;</span><br><span class="line">    return &#x27;run2&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//ts中定义函数的方法</span><br><span class="line"></span><br><span class="line">//函数声明法</span><br><span class="line">function fun1(): string &#123;</span><br><span class="line">    return &#x27;run&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//匿名函数</span><br><span class="line">var fun2 = function (): number &#123;</span><br><span class="line">    return 123;</span><br><span class="line">&#125;</span><br><span class="line">fun2();   //调用方法</span><br><span class="line"></span><br><span class="line">//ts中定义方法传参</span><br><span class="line">function getInfo(name: string, age: number): string &#123;</span><br><span class="line">    return `$&#123;name&#125; --- $&#123;age&#125;`</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">alert(getInfo(&#x27;zhangsan&#x27;,12));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var getInfo=function (name:string,age:number):string &#123;</span><br><span class="line">    return `$&#123;name&#125;--$&#123;age&#125;`;</span><br><span class="line">&#125;</span><br><span class="line">alert(getInfo(&#x27;zhangsan&#x27;,13));</span><br><span class="line"></span><br><span class="line">//没有返回值的方法</span><br><span class="line">function  fun3():void &#123;</span><br><span class="line">    console.log(&quot;run&quot;)</span><br><span class="line">&#125;</span><br><span class="line">fun3();</span><br></pre></td></tr></table></figure>
@@ -470,6 +458,18 @@
       <tags>
         <tag>考研</tag>
         <tag>数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Typescript初学习（四）</title>
+    <url>/2023/01/07/Typescript%EF%BC%88%E5%9B%9B%EF%BC%89/</url>
+    <content><![CDATA[<h3 id="Typescript接口"><a href="#Typescript接口" class="headerlink" title="Typescript接口"></a>Typescript接口</h3>]]></content>
+      <categories>
+        <category>Typescript</category>
+      </categories>
+      <tags>
+        <tag>前端</tag>
+        <tag>Typescript</tag>
       </tags>
   </entry>
   <entry>
