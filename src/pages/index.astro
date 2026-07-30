@@ -59,7 +59,7 @@ const currentFocus = [
         </p>
         <div class="button-row">
           <a class="button button-primary" href="#knowledge-map">浏览知识地图 <span>↓</span></a>
-          <a class="button" href="/about/">了解构建计划 <span>↗</span></a>
+          <a class="button" href="/about/">了解本站 <span>↗</span></a>
         </div>
       </div>
     </div>
@@ -107,24 +107,23 @@ const currentFocus = [
   <section class="section focus">
     <div class="container focus-grid">
       <div class="focus-intro">
-        <p class="eyebrow">Now building</p>
-        <h2 class="section-title">当前正在建设</h2>
+        <p class="eyebrow">Ongoing themes</p>
+        <h2 class="section-title">长期关注主题</h2>
         <p class="section-lead">
-          知识库会从真实目标出发逐步生长，而不是一次性填满大量低价值页面。
+          围绕职业、学习与实践持续积累，让每次记录都能连接到已有知识。
         </p>
       </div>
       <div class="focus-items">
-        {currentFocus.map((item, index) => (
+        {currentFocus.map((item) => (
           <article>
             <div class="focus-marker">
               <span>{item.code}</span>
-              <i style={`--progress: ${index === 0 ? 34 : index === 1 ? 22 : 18}%`}></i>
             </div>
             <div>
               <h3>{item.title}</h3>
               <p>{item.note}</p>
             </div>
-            <span class="phase">规划中</span>
+            <span class="phase">持续更新</span>
           </article>
         ))}
       </div>
@@ -136,7 +135,7 @@ const currentFocus = [
       <div class="section-heading">
         <div>
           <p class="eyebrow">Latest knowledge</p>
-          <h2 class="section-title">知识库样例</h2>
+          <h2 class="section-title">最近更新</h2>
         </div>
         <a class="text-link" href="/knowledge/">浏览全部知识 ↗</a>
       </div>
@@ -303,15 +302,6 @@ const currentFocus = [
     font-size: 0.72rem;
     font-weight: 850;
     letter-spacing: 0.12em;
-  }
-
-  .focus-marker i {
-    display: block;
-    width: 70px;
-    height: 3px;
-    margin-top: 10px;
-    background:
-      linear-gradient(to right, var(--teal) var(--progress), var(--line) var(--progress));
   }
 
   .focus-items h3 {
