@@ -1,0 +1,155 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="关于本站" description="关于 Kun 的个人知识库、内容边界与建设方式。">
+  <section class="about-hero container">
+    <p class="eyebrow">About this system</p>
+    <h1>一个与职业、学习和思考一起生长的知识系统。</h1>
+    <p>
+      这里不是信息收藏夹，而是 Kun 对开发技术、考试学习、银行与金融知识，以及市场和科技变化的长期整理。
+    </p>
+  </section>
+
+  <section class="section container">
+    <div class="about-grid">
+      <article>
+        <span>01 / 目标</span>
+        <h2>让经验能够被再次调用</h2>
+        <p>每一篇内容都应回答一个问题、沉淀一种方法，或为下一次决策提供更好的起点。</p>
+      </article>
+      <article>
+        <span>02 / 方法</span>
+        <h2>持续整理，而非一次写完</h2>
+        <p>内容会经历初步记录、持续完善和长期维护。过时内容不会伪装成永远正确的答案。</p>
+      </article>
+      <article>
+        <span>03 / 边界</span>
+        <h2>公开内容必须合规</h2>
+        <p>不公开客户信息、内部业务数据、敏感制度和未经授权的材料。金融内容不构成投资建议。</p>
+      </article>
+      <article>
+        <span>04 / 技术</span>
+        <h2>内容首先属于作者</h2>
+        <p>知识以 Markdown 保存、Git 管理，并生成静态站点，尽量避免被某个平台或服务锁定。</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section container roadmap">
+    <div>
+      <p class="eyebrow">Roadmap</p>
+      <h2 class="section-title">建设路线</h2>
+    </div>
+    <ol>
+      <li class="active"><span>阶段 1</span><strong>基础骨架与内容模型</strong><small>已完成</small></li>
+      <li class="active"><span>阶段 2</span><strong>知识库、搜索与关联阅读</strong><small>已完成</small></li>
+      <li class="active"><span>阶段 3</span><strong>旧 Hexo 内容完整迁移</strong><small>已完成</small></li>
+      <li class="active"><span>阶段 4</span><strong>质量、SEO 与可访问性</strong><small>已完成</small></li>
+      <li><span>阶段 5</span><strong>GitHub Pages 与域名上线</strong><small>待开始</small></li>
+    </ol>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-hero {
+    padding-top: 112px;
+  }
+
+  .about-hero h1 {
+    max-width: 980px;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 8vw, 6.8rem);
+    font-weight: 500;
+    letter-spacing: -0.07em;
+    line-height: 0.98;
+  }
+
+  .about-hero > p:last-child {
+    max-width: 680px;
+    margin: 34px 0 0 auto;
+    color: var(--ink-soft);
+    font-size: 1.1rem;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+
+  .about-grid article {
+    min-height: 270px;
+    padding: 34px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .about-grid span,
+  .roadmap li span,
+  .roadmap li small {
+    color: var(--teal);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+
+  .about-grid h2 {
+    margin: 60px 0 12px;
+    font-family: var(--font-serif);
+    font-size: 1.85rem;
+    font-weight: 600;
+  }
+
+  .about-grid p {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+  }
+
+  .roadmap {
+    display: grid;
+    grid-template-columns: 0.7fr 1.3fr;
+    gap: 70px;
+  }
+
+  .roadmap ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .roadmap li {
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    gap: 20px;
+    padding: 24px 0;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .roadmap li.active strong {
+    color: var(--ink);
+  }
+
+  .roadmap li small {
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 760px) {
+    .about-grid,
+    .roadmap {
+      grid-template-columns: 1fr;
+    }
+
+    .roadmap li {
+      grid-template-columns: 72px 1fr;
+    }
+
+    .roadmap li small {
+      display: none;
+    }
+  }
+</style>

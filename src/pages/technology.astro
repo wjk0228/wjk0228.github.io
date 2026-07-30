@@ -1,0 +1,42 @@
+---
+import DomainLanding from '../components/DomainLanding.astro';
+
+const topics = [
+  {
+    title: '语言与基础',
+    description: '建立稳定的编程基础，关注语言机制、标准库、数据结构和算法。',
+    items: ['Java', 'TypeScript', 'Python', 'SQL'],
+  },
+  {
+    title: '后端与架构',
+    description: '从服务开发走向系统设计，沉淀架构决策、接口设计和工程边界。',
+    items: ['Spring Boot', 'Node.js', '系统设计', '设计模式'],
+  },
+  {
+    title: '数据与基础设施',
+    description: '理解数据如何存储、流动和被可靠地交付。',
+    items: ['数据库', '缓存', '消息系统', 'DevOps'],
+  },
+  {
+    title: 'AI 与效率工具',
+    description: '把 AI 能力放进真实开发流程，关注可验证的效率提升。',
+    items: ['AI Coding', '自动化', '知识管理', '工作流'],
+  },
+];
+
+const focuses = [
+  { label: 'MIGRATION', title: '整理旧站技术笔记', note: '清理历史内容、修复代码块与图片，归入新的技术主题。' },
+  { label: 'PRACTICE', title: '问题排查记录', note: '记录现象、假设、证据与结论，形成可复用的排障手册。' },
+  { label: 'SYSTEM', title: '架构与工程判断', note: '从“怎么写”逐步走向“为什么这样设计”。' },
+];
+---
+
+<DomainLanding
+  eyebrow="Technology"
+  title="技术"
+  accent="成长"
+  description="记录开发能力的长期复利：不仅保留代码，更保留问题背景、技术判断、实践结果与复盘。"
+  metric="04"
+  {topics}
+  {focuses}
+/>

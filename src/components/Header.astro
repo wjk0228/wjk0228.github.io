@@ -1,0 +1,207 @@
+---
+import { navItems, site } from '../data/site';
+
+const pathname = Astro.url.pathname;
+---
+
+<header class="site-header" data-pagefind-ignore>
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label={`${site.title}首页`}>
+      <span class="brand-mark">K</span>
+      <span>
+        <strong>{site.shortTitle}</strong>
+        <small>Personal Knowledge Base</small>
+      </span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="主导航">
+      {navItems.map((item) => (
+        <a class:list={{ active: pathname.startsWith(item.href) }} href={item.href}>
+          {item.label}
+        </a>
+      ))}
+      <a class:list={{ active: pathname.startsWith('/about') }} href="/about/">关于</a>
+    </nav>
+
+    <div class="header-actions">
+      <a class="search-link" href="/search/" aria-label="全文搜索" title="全文搜索">
+        <span aria-hidden="true">⌕</span>
+      </a>
+      <button class="theme-toggle" type="button" aria-label="切换明暗主题" title="切换明暗主题" aria-pressed="false">
+        <span class="theme-icon" aria-hidden="true">◐</span>
+      </button>
+      <details class="mobile-nav">
+        <summary aria-label="打开导航">菜单</summary>
+        <nav aria-label="移动端导航">
+          {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
+          <a href="/about/">关于本站</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    z-index: 20;
+    top: 0;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--canvas) 78%, transparent);
+    backdrop-filter: blur(20px);
+  }
+
+  .header-inner {
+    display: flex;
+    min-height: 76px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+  }
+
+  .brand-mark {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    place-items: center;
+    color: #fff;
+    border-radius: 12px 4px 12px 4px;
+    background: #0e3142;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-style: italic;
+  }
+
+  .brand strong,
+  .brand small {
+    display: block;
+    line-height: 1.2;
+  }
+
+  .brand strong {
+    font-size: 0.87rem;
+    letter-spacing: 0.04em;
+  }
+
+  .brand small {
+    margin-top: 4px;
+    color: var(--ink-soft);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .desktop-nav a {
+    padding: 9px 13px;
+    color: var(--ink-soft);
+    border-radius: 999px;
+    font-size: 0.83rem;
+    font-weight: 650;
+  }
+
+  .desktop-nav a:hover,
+  .desktop-nav a.active {
+    color: var(--ink);
+    background: var(--surface-muted);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .theme-toggle,
+  .search-link,
+  .mobile-nav summary {
+    display: grid;
+    height: 38px;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    cursor: pointer;
+  }
+
+  .theme-toggle,
+  .search-link {
+    width: 38px;
+  }
+
+  .search-link {
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .theme-icon {
+    font-size: 1.05rem;
+  }
+
+  .mobile-nav {
+    display: none;
+    position: relative;
+  }
+
+  .mobile-nav summary {
+    padding: 0 14px;
+    list-style: none;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .mobile-nav summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-nav nav {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 200px;
+    overflow: hidden;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface-solid);
+    box-shadow: var(--shadow);
+  }
+
+  .mobile-nav nav a {
+    display: block;
+    padding: 11px 12px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+  }
+
+  .mobile-nav nav a:hover {
+    background: var(--surface-muted);
+  }
+
+  @media (max-width: 880px) {
+    .desktop-nav {
+      display: none;
+    }
+
+    .mobile-nav {
+      display: block;
+    }
+  }
+
+  @media (max-width: 460px) {
+    .brand small {
+      display: none;
+    }
+  }
+</style>

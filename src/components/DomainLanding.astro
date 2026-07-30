@@ -1,0 +1,233 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface Topic {
+  title: string;
+  description: string;
+  items: string[];
+}
+
+interface Focus {
+  label: string;
+  title: string;
+  note: string;
+}
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  accent: string;
+  description: string;
+  metric: string;
+  topics: Topic[];
+  focuses: Focus[];
+}
+
+const { eyebrow, title, accent, description, metric, topics, focuses } = Astro.props;
+---
+
+<BaseLayout title={`${title}${accent}`} description={description}>
+  <section class="domain-hero">
+    <div class="container domain-grid">
+      <div>
+        <p class="eyebrow">{eyebrow}</p>
+        <h1>{title}<em>{accent}</em></h1>
+        <p class="hero-lead">{description}</p>
+      </div>
+      <aside class="domain-index glass">
+        <span>领域索引</span>
+        <strong>{metric}</strong>
+        <p>从基础概念到可复用的方法，持续整理、校验与更新。</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Knowledge map</p>
+          <h2 class="section-title">知识地图</h2>
+        </div>
+        <p class="section-lead">以主题组织长期知识，以路线组织阶段学习。</p>
+      </div>
+      <div class="topic-grid">
+        {topics.map((topic, index) => (
+          <article class="topic-card">
+            <span class="topic-number">{String(index + 1).padStart(2, '0')}</span>
+            <h3>{topic.title}</h3>
+            <p>{topic.description}</p>
+            <div class="tag-list">
+              {topic.items.map((item) => <span class="tag">{item}</span>)}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section focus-section">
+    <div class="container">
+      <p class="eyebrow">Current focus</p>
+      <h2 class="section-title">当前建设重点</h2>
+      <div class="focus-list">
+        {focuses.map((focus) => (
+          <article>
+            <span>{focus.label}</span>
+            <h3>{focus.title}</h3>
+            <p>{focus.note}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .domain-hero {
+    padding: 108px 0 72px;
+  }
+
+  .domain-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 310px;
+    align-items: end;
+    gap: 64px;
+  }
+
+  h1 {
+    max-width: 780px;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(3.4rem, 8vw, 7rem);
+    font-weight: 500;
+    letter-spacing: -0.07em;
+    line-height: 0.96;
+  }
+
+  h1 em {
+    color: var(--teal);
+    font-weight: inherit;
+  }
+
+  .hero-lead {
+    max-width: 680px;
+    margin: 28px 0 0;
+    color: var(--ink-soft);
+    font-size: 1.1rem;
+  }
+
+  .domain-index {
+    padding: 26px;
+    border-radius: var(--radius-md);
+  }
+
+  .domain-index span {
+    color: var(--ink-soft);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .domain-index strong {
+    display: block;
+    margin: 8px 0;
+    color: var(--teal);
+    font-family: var(--font-serif);
+    font-size: 3.4rem;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .domain-index p,
+  .topic-card p,
+  .focus-list p {
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+  }
+
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+
+  .topic-card {
+    min-height: 285px;
+    padding: 32px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface) 58%, transparent);
+  }
+
+  .topic-number {
+    color: var(--gold);
+    font-family: var(--font-serif);
+    font-size: 0.78rem;
+    font-style: italic;
+  }
+
+  .topic-card h3,
+  .focus-list h3 {
+    margin: 34px 0 10px;
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    font-weight: 600;
+  }
+
+  .topic-card .tag-list {
+    margin-top: 24px;
+  }
+
+  .focus-section {
+    background: color-mix(in srgb, var(--canvas-strong) 72%, transparent);
+  }
+
+  .focus-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 36px;
+  }
+
+  .focus-list article {
+    padding: 28px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+
+  .focus-list article > span {
+    color: var(--teal);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+
+  .focus-list h3 {
+    margin-top: 18px;
+  }
+
+  @media (max-width: 800px) {
+    .domain-grid,
+    .focus-list {
+      grid-template-columns: 1fr;
+    }
+
+    .domain-index {
+      max-width: 420px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .domain-hero {
+      padding-top: 72px;
+    }
+
+    .topic-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

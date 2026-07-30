@@ -1,0 +1,100 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { collectionLabel, domainLabel, formatDate, statusLabel } from '../data/site';
+import { entryHref } from '../utils/content';
+
+type Entry =
+  | CollectionEntry<'notes'>
+  | CollectionEntry<'exams'>
+  | CollectionEntry<'articles'>
+  | CollectionEntry<'projects'>
+  | CollectionEntry<'roadmaps'>
+  | CollectionEntry<'glossary'>;
+
+interface Props {
+  entry: Entry;
+}
+
+const { entry } = Astro.props;
+const href = entryHref(entry);
+---
+
+<article class="knowledge-card">
+  <div class="card-meta">
+    <span>{domainLabel[entry.data.domain]} · {collectionLabel[entry.collection]}</span>
+    <time datetime={entry.data.updated.toISOString()}>{formatDate(entry.data.updated)}</time>
+  </div>
+  <h3><a href={href}>{entry.data.title}</a></h3>
+  <p>{entry.data.description}</p>
+  <div class="card-footer">
+    <span class="status">{statusLabel[entry.data.status]}</span>
+    <a href={href} aria-label={`阅读${entry.data.title}`}>阅读 ↗</a>
+  </div>
+</article>
+
+<style>
+  .knowledge-card {
+    display: flex;
+    min-height: 260px;
+    flex-direction: column;
+    padding: 28px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    transition: 180ms ease;
+  }
+
+  .knowledge-card:hover {
+    border-color: color-mix(in srgb, var(--teal) 55%, var(--line));
+    box-shadow: var(--shadow);
+    transform: translateY(-4px);
+  }
+
+  .card-meta,
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .card-meta {
+    color: var(--ink-soft);
+    font-size: 0.7rem;
+    font-weight: 750;
+    letter-spacing: 0.05em;
+  }
+
+  h3 {
+    margin: 30px 0 12px;
+    font-family: var(--font-serif);
+    font-size: 1.65rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+  }
+
+  h3 a:hover {
+    color: var(--teal);
+  }
+
+  p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+  }
+
+  .card-footer {
+    margin-top: auto;
+    padding-top: 26px;
+    font-size: 0.78rem;
+    font-weight: 750;
+  }
+
+  .status {
+    padding: 4px 9px;
+    color: var(--teal);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--teal) 10%, transparent);
+  }
+</style>

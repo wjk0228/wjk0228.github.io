@@ -1,0 +1,42 @@
+---
+import DomainLanding from '../components/DomainLanding.astro';
+
+const topics = [
+  {
+    title: '银行业务基础',
+    description: '围绕客户经理工作，建立产品、流程、合规和服务的基础知识。',
+    items: ['公司业务', '零售业务', '支付结算', '合规'],
+  },
+  {
+    title: '财务与信贷分析',
+    description: '从财务报表、现金流和经营逻辑理解企业质量与偿债能力。',
+    items: ['财务报表', '现金流', '授信分析', '风险识别'],
+  },
+  {
+    title: '宏观与金融市场',
+    description: '理解利率、汇率、政策和市场之间的传导关系。',
+    items: ['宏观经济', '货币政策', '利率', '金融市场'],
+  },
+  {
+    title: '行业研究',
+    description: '用结构化框架理解行业周期、商业模式和关键风险。',
+    items: ['行业图谱', '商业模式', '周期判断', '风险清单'],
+  },
+];
+
+const focuses = [
+  { label: 'FOUNDATION', title: '构建金融术语表', note: '统一关键概念与口径，为后续专题建立共同语言。' },
+  { label: 'CREDIT', title: '企业分析框架', note: '从经营、财务、行业和风险四个维度形成分析模板。' },
+  { label: 'COMPLIANCE', title: '公开与私人内容分层', note: '确保客户信息、内部资料和敏感数据不进入公共站点。' },
+];
+---
+
+<DomainLanding
+  eyebrow="Finance"
+  title="金融"
+  accent="知识"
+  description="以银行客户经理的真实工作场景为起点，连接银行业务、企业分析、宏观经济与金融市场。"
+  metric="04"
+  {topics}
+  {focuses}
+/>

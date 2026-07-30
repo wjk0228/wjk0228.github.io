@@ -1,0 +1,46 @@
+---
+import { entryHref, getAllEntries } from '../../../../utils/content';
+
+export async function getStaticPaths() {
+  const entries = (await getAllEntries(false)).filter(
+    (entry) => entry.data.sourceType === 'migration' && entry.data.legacyUrl,
+  );
+
+  return entries.map((entry) => {
+    const parts = entry.data.legacyUrl!.split('/').filter(Boolean);
+    return {
+      params: {
+        year: parts[0],
+        month: parts[1],
+        day: parts[2],
+        slug: parts.slice(3).join('/'),
+      },
+      props: {
+        title: entry.data.title,
+        target: entryHref(entry),
+      },
+    };
+  });
+}
+
+const { title, target } = Astro.props as { title: string; target: string };
+const canonicalURL = new URL(target, Astro.site);
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, follow" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={canonicalURL} />
+    <title>{title} · 页面已迁移</title>
+  </head>
+  <body>
+    <p>页面已经迁移，正在前往 <a href={target}>{title}</a>。</p>
+    <script is:inline define:vars={{ target }}>
+      window.location.replace(target);
+    </script>
+  </body>
+</html>

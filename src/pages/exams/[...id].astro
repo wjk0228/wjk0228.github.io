@@ -1,0 +1,29 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import { getAllEntries, getRelatedEntries, getSeriesEntries } from '../../utils/content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('exams', ({ data }) =>
+    import.meta.env.PROD ? !data.draft : true,
+  );
+  return entries.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props as { entry: CollectionEntry<'exams'> };
+const { Content, headings } = await render(entry);
+const allEntries = await getAllEntries();
+const related = getRelatedEntries(entry, allEntries);
+const seriesEntries = getSeriesEntries(entry, allEntries);
+---
+
+<ContentLayout
+  data={entry.data}
+  {headings}
+  {related}
+  {seriesEntries}
+  currentId={entry.id}
+  currentCollection={entry.collection}
+>
+  <Content />
+</ContentLayout>

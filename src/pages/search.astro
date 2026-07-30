@@ -1,0 +1,299 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="全文搜索" description="搜索个人知识库中的标题、正文、标签和主题。" noindex>
+  <section class="search-shell container" data-pagefind-ignore>
+    <header>
+      <p class="eyebrow">Full-text search</p>
+      <h1>搜索整个<br /><em>知识库。</em></h1>
+      <p>索引在本地构建，不会将你的查询发送到第三方服务。</p>
+    </header>
+
+    <div class="search-panel glass">
+      <label for="search-input">输入关键词</label>
+      <div class="search-box">
+        <span aria-hidden="true">⌕</span>
+        <input
+          id="search-input"
+          type="search"
+          placeholder="搜索标题、正文、标签或主题"
+          autocomplete="off"
+        />
+        <kbd>Enter</kbd>
+      </div>
+      <p id="search-status" role="status">输入关键词开始搜索</p>
+    </div>
+
+    <div id="search-results" class="search-results" aria-live="polite"></div>
+  </section>
+</BaseLayout>
+
+<script is:inline type="module">
+  const input = document.querySelector('#search-input');
+  const status = document.querySelector('#search-status');
+  const resultsRoot = document.querySelector('#search-results');
+  let pagefind;
+  let timer;
+
+  const setStatus = (message) => {
+    if (status) status.textContent = message;
+  };
+
+  const getPagefind = async () => {
+    if (pagefind) return pagefind;
+    try {
+      pagefind = await import('/pagefind/pagefind.js');
+      await pagefind.init();
+      return pagefind;
+    } catch {
+      setStatus('搜索索引尚未加载。请使用生产构建预览搜索功能。');
+      return null;
+    }
+  };
+
+  const renderResults = async (query) => {
+    if (!resultsRoot) return;
+    if (!query.trim()) {
+      resultsRoot.replaceChildren();
+      setStatus('输入关键词开始搜索');
+      return;
+    }
+
+    setStatus('正在搜索…');
+    const engine = await getPagefind();
+    if (!engine) return;
+
+    const search = await engine.search(query);
+    const data = await Promise.all(search.results.slice(0, 20).map((result) => result.data()));
+    resultsRoot.replaceChildren();
+    setStatus(`找到 ${search.results.length} 条结果`);
+
+    if (data.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'search-empty';
+      empty.innerHTML = '<strong>没有找到匹配内容</strong><p>尝试更短的关键词，或前往知识库使用分类筛选。</p>';
+      resultsRoot.append(empty);
+      return;
+    }
+
+    data.forEach((result, index) => {
+      const card = document.createElement('a');
+      card.className = 'result-card';
+      card.href = result.url;
+
+      const number = document.createElement('span');
+      number.className = 'result-number';
+      number.textContent = String(index + 1).padStart(2, '0');
+
+      const body = document.createElement('div');
+      const meta = document.createElement('span');
+      meta.className = 'result-meta';
+      meta.textContent = [result.meta?.domain, result.meta?.status].filter(Boolean).join(' · ') || '知识库';
+
+      const title = document.createElement('h2');
+      title.textContent = result.meta?.title || '未命名内容';
+
+      const excerpt = document.createElement('p');
+      excerpt.innerHTML = result.excerpt || '';
+
+      body.append(meta, title, excerpt);
+
+      const arrow = document.createElement('span');
+      arrow.className = 'result-arrow';
+      arrow.textContent = '↗';
+      card.append(number, body, arrow);
+      resultsRoot.append(card);
+    });
+  };
+
+  input?.addEventListener('focus', getPagefind, { once: true });
+  input?.addEventListener('input', () => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      const query = input.value.trim();
+      const url = new URL(window.location.href);
+      query ? url.searchParams.set('q', query) : url.searchParams.delete('q');
+      window.history.replaceState({}, '', url);
+      renderResults(query);
+    }, 180);
+  });
+
+  const initialQuery = new URL(window.location.href).searchParams.get('q')?.trim();
+  if (initialQuery && input) {
+    input.value = initialQuery;
+    renderResults(initialQuery);
+  }
+</script>
+
+<style>
+  .search-shell {
+    padding-top: 108px;
+  }
+
+  header {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    align-items: end;
+    gap: 70px;
+  }
+
+  h1 {
+    grid-column: 1;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(3.6rem, 9vw, 7.2rem);
+    font-weight: 500;
+    letter-spacing: -0.07em;
+    line-height: 0.94;
+  }
+
+  h1 em {
+    color: var(--teal);
+    font-weight: inherit;
+  }
+
+  header > p:last-child {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    color: var(--ink-soft);
+  }
+
+  .search-panel {
+    margin-top: 64px;
+    padding: 28px;
+    border-radius: var(--radius-md);
+  }
+
+  .search-panel label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--ink-soft);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+
+  .search-box {
+    display: grid;
+    grid-template-columns: 34px 1fr auto;
+    align-items: center;
+    gap: 10px;
+    min-height: 62px;
+    padding: 0 18px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--surface-solid);
+  }
+
+  .search-box > span {
+    color: var(--teal);
+    font-size: 1.55rem;
+  }
+
+  input {
+    width: 100%;
+    color: var(--ink);
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 1rem;
+  }
+
+  kbd {
+    padding: 3px 8px;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-size: 0.66rem;
+  }
+
+  #search-status {
+    margin: 12px 0 0;
+    color: var(--ink-soft);
+    font-size: 0.73rem;
+  }
+
+  .search-results {
+    margin-top: 42px;
+    border-top: 1px solid var(--line);
+  }
+
+  :global(.result-card) {
+    display: grid;
+    grid-template-columns: 54px 1fr 32px;
+    gap: 24px;
+    padding: 28px 4px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  :global(.result-card:hover) {
+    padding-inline: 18px;
+    background: var(--surface);
+  }
+
+  :global(.result-number),
+  :global(.result-meta) {
+    color: var(--gold);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+  }
+
+  :global(.result-card h2) {
+    margin: 8px 0;
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-weight: 600;
+  }
+
+  :global(.result-card p) {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.84rem;
+  }
+
+  :global(.result-card mark) {
+    color: var(--ink);
+    background: var(--gold-soft);
+  }
+
+  :global(.result-arrow) {
+    color: var(--teal);
+  }
+
+  :global(.search-empty) {
+    padding: 70px 20px;
+    text-align: center;
+  }
+
+  :global(.search-empty strong) {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+  }
+
+  :global(.search-empty p) {
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 760px) {
+    header {
+      grid-template-columns: 1fr;
+    }
+
+    header > p:last-child {
+      grid-column: 1;
+      grid-row: auto;
+    }
+
+    :global(.result-card) {
+      grid-template-columns: 36px 1fr;
+      gap: 14px;
+    }
+
+    :global(.result-arrow) {
+      display: none;
+    }
+  }
+</style>
