@@ -98,3 +98,5 @@ npm run migrate:hexo
 4. 发布到 GitHub Pages
 
 Pages 仓库设置需要选择 GitHub Actions 作为构建来源，并将自定义域名设置为 `blog.wjkun.cn`。DNS 的 `blog` CNAME 应直接指向 `wjk0228.github.io`。
+
+当前源码位于 `main` 分支，旧 Hexo 静态站保留在 `master` 分支作为历史回退快照。
