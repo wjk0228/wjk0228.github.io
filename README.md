@@ -69,6 +69,12 @@ npm run preview
 
 新增内容时优先维护 `domain`、`topics`、`tags`、`status`、`updated`；需要形成连续阅读路径时，再填写相同的 `series` 和递增的 `order`。
 
+## Obsidian
+
+可以直接将 `src/content/` 作为 Obsidian Vault 打开。仓库已经提供收件箱、附件目录、五类内容模板和标准 Markdown 链接配置。
+
+详细使用方式见 `docs/obsidian-workflow.md`。Obsidian 用于编辑、链接和整理，Astro 继续负责校验、搜索、构建和公开发布。
+
 ## Hexo 迁移
 
 旧 Hexo 的 13 篇文章已全部纳入当前内容模型：

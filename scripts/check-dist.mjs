@@ -5,6 +5,14 @@ import { fileURLToPath } from 'node:url';
 const siteRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const distRoot = join(siteRoot, 'dist');
 const contentRoot = join(siteRoot, 'src', 'content');
+const collectionDirectories = new Set([
+  'notes',
+  'exams',
+  'articles',
+  'projects',
+  'roadmaps',
+  'glossary',
+]);
 const errors = [];
 
 async function walk(directory) {
@@ -87,9 +95,13 @@ if (/\/(?:search|tags)\//.test(sitemap) || /\/20\d{2}\/\d{2}\/\d{2}\//.test(site
 
 const rss = await readFile(join(distRoot, 'rss.xml'), 'utf8');
 const rssItems = [...rss.matchAll(/<item>/g)].length;
-const contentFiles = (await walk(contentRoot)).filter((file) =>
-  ['.md', '.mdx'].includes(extname(file)),
-);
+const contentFiles = (await walk(contentRoot)).filter((file) => {
+  const label = relative(contentRoot, file).replaceAll('\\', '/');
+  return (
+    ['.md', '.mdx'].includes(extname(file)) &&
+    collectionDirectories.has(label.split('/')[0])
+  );
+});
 const publishedContent = (
   await Promise.all(contentFiles.map((file) => readFile(file, 'utf8')))
 ).filter((source) => !/^draft:\s*true\s*$/m.test(source)).length;

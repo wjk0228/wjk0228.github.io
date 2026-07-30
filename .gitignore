@@ -22,3 +22,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Obsidian device-local state
+src/content/.obsidian/workspace*.json
+src/content/.obsidian/cache/
+src/content/.trash/

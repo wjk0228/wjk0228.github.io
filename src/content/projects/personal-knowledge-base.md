@@ -1,6 +1,6 @@
 ---
-title: 个人知识库重构
-description: 将旧 Hexo 博客升级为覆盖技术、考试、金融和趋势观察的个人知识系统。
+title: 个人知识库：从 Hexo 到 Astro 的重构复盘
+description: 复盘如何将旧 Hexo 博客升级为覆盖技术、考试、金融和趋势观察的长期知识系统。
 type: project
 domain: general
 topics:
@@ -9,7 +9,7 @@ topics:
 tags:
   - Astro
   - GitHub Pages
-status: growing
+status: evergreen
 created: 2026-07-30
 updated: 2026-07-30
 difficulty: intermediate
@@ -22,14 +22,16 @@ sourceType: original
 
 建设一套长期可维护、内容归属清晰、能够部署到 GitHub Pages 的个人知识库。
 
-## 阶段规划
+## 已完成的能力
 
-1. 基础骨架、视觉系统和内容模型。
-2. 搜索、目录、系列与关联阅读。
-3. 旧 Hexo 内容完整迁移。
-4. SEO、性能、可访问性与内容质量检查。
-5. GitHub Pages、域名和 HTTPS 上线。
+- 统一的内容模型、分类与视觉系统。
+- 全文搜索、页面目录、系列导航与关联阅读。
+- 旧 Hexo 内容和插图迁移。
+- SEO、RSS、可访问性与自动质量检查。
+- GitHub Pages 自动发布、自定义域名和 HTTPS。
 
-## 当前状态
+## 长期维护方式
 
-阶段 1 正在进行。旧 Hexo 源工程保持不动，新站在独立目录中建设。
+网站已经进入持续维护状态。内容使用 Markdown 保存，通过 Obsidian 辅助整理，提交到 `main` 分支后由 GitHub Actions 自动检查并发布。
+
+旧 Hexo 静态站保留在 `master` 分支，作为历史快照与回退来源。

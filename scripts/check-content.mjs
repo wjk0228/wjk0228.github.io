@@ -5,6 +5,14 @@ import { fileURLToPath } from 'node:url';
 const siteRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const contentRoot = join(siteRoot, 'src', 'content');
 const publicRoot = join(siteRoot, 'public');
+const collectionDirectories = new Set([
+  'notes',
+  'exams',
+  'articles',
+  'projects',
+  'roadmaps',
+  'glossary',
+]);
 const errors = [];
 const warnings = [];
 
@@ -50,7 +58,13 @@ function list(frontmatter, key) {
     });
 }
 
-const files = (await walk(contentRoot)).filter((file) => ['.md', '.mdx'].includes(extname(file)));
+const files = (await walk(contentRoot)).filter((file) => {
+  const label = relative(contentRoot, file).replaceAll('\\', '/');
+  return (
+    ['.md', '.mdx'].includes(extname(file)) &&
+    collectionDirectories.has(label.split('/')[0])
+  );
+});
 const titles = new Map();
 const seriesOrders = new Map();
 
