@@ -11,6 +11,12 @@ export type Question = {
   category?: string;
 };
 
+export type ResolvedAnswer = {
+  key: string;
+  text: string;
+  option: string;
+};
+
 const FIELD_ALIASES = {
   stem: ["stem", "question", "title", "题干", "题目", "题干（必填）"],
   options: ["options", "choices", "选项"],
@@ -71,6 +77,36 @@ function stringOrUndefined(value: unknown) {
   return value === undefined || value === null || String(value).trim() === ""
     ? undefined
     : String(value).trim();
+}
+
+function optionParts(option: string, index: number) {
+  const match = option.trim().match(/^([A-J])[.．、:：)）\s]+(.*)$/i);
+  return {
+    key: (match?.[1] ?? String.fromCharCode(65 + index)).toUpperCase(),
+    text: (match?.[2] ?? option).trim(),
+  };
+}
+
+export function resolveAnswers(question: Question): ResolvedAnswer[] {
+  if (!question.answer) return [];
+
+  const normalizedAnswer = question.answer.trim();
+  const normalizedAnswerText = ({ "对": "正确", "错": "错误" } as Record<string, string>)[normalizedAnswer] ?? normalizedAnswer;
+  const compactLetters = normalizedAnswer.toUpperCase().replace(/[^A-J]/g, "");
+  const answerKeys = /^[A-J\s,，、/;；]+$/i.test(normalizedAnswer)
+    ? new Set(compactLetters.split(""))
+    : new Set<string>();
+
+  return question.options.flatMap((option, index) => {
+    const parts = optionParts(option, index);
+    const matchesKey = answerKeys.has(parts.key);
+    const matchesText = normalizedAnswerText === parts.text || normalizedAnswerText === option.trim();
+    return matchesKey || matchesText ? [{ ...parts, option }] : [];
+  });
+}
+
+export function getOptionKey(option: string, index: number) {
+  return optionParts(option, index).key;
 }
 
 function parseCsv(text: string): UnknownRecord[] {
@@ -171,6 +207,7 @@ export function searchQuestions(questions: Question[], rawQuery: string) {
 }
 
 const STORAGE_KEY = "question-bank-search:v1";
+const STORAGE_NAME_KEY = "question-bank-search:bank-name:v1";
 
 export function loadQuestions(): Question[] {
   try {
@@ -180,6 +217,17 @@ export function loadQuestions(): Question[] {
   }
 }
 
-export function saveQuestions(questions: Question[]) {
+export function loadQuestionBankName() {
+  return localStorage.getItem(STORAGE_NAME_KEY) ?? "已导入题库";
+}
+
+export function saveQuestions(questions: Question[], bankName?: string) {
+  if (!questions.length) {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_NAME_KEY);
+    return;
+  }
+
   localStorage.setItem(STORAGE_KEY, JSON.stringify(questions));
+  if (bankName) localStorage.setItem(STORAGE_NAME_KEY, bankName);
 }
