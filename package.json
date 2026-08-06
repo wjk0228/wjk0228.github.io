@@ -1,30 +1,26 @@
 {
-  "name": "site",
+  "name": "question-bank-search",
+  "version": "0.1.0",
+  "private": true,
   "type": "module",
-  "version": "0.0.1",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=20"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "postbuild": "pagefind --site dist",
-    "check": "astro check",
-    "check:content": "node scripts/check-content.mjs",
-    "check:dist": "node scripts/check-dist.mjs",
-    "verify": "npm run check && npm run check:content && npm run build && npm run check:dist",
-    "preview": "astro preview",
-    "migrate:hexo": "node scripts/migrate-hexo.mjs",
-    "astro": "astro"
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@astrojs/rss": "^4.0.17",
-    "@astrojs/sitemap": "^3.7.3",
-    "astro": "^7.1.6"
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
-    "pagefind": "^1.5.2",
-    "typescript": "^6.0.3"
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "typescript": "5.9.3",
+    "vite": "8.0.13"
   }
 }
